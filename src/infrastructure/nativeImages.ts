@@ -2,28 +2,7 @@ import type { NativeImage } from "../domain/nativeImage";
 import type { DocumentModel } from "../domain/document";
 import { mutatePdf, withPdfPage } from "./pdfMutation";
 import * as mupdf from "mupdf";
-
-function pageImages(page: mupdf.PDFPage): NativeImage[] {
-  const [ox, oy] = page.getBounds();
-  const text = page.toStructuredText("preserve-images");
-  const images: NativeImage[] = [];
-  try {
-    text.walk({
-      onImageBlock: ([x0, y0, x1, y1]) => {
-        images.push({
-          index: images.length,
-          x: x0 - ox,
-          y: y0 - oy,
-          width: x1 - x0,
-          height: y1 - y0,
-        });
-      },
-    });
-    return images;
-  } finally {
-    text.destroy();
-  }
-}
+import { collectPageImages as pageImages } from "./nativeImageDetection";
 
 export async function extractNativeImages(
   bytes: Uint8Array,
@@ -46,31 +25,34 @@ export async function removeNativeImage(
   pageIndex: number,
   selected: NativeImage,
 ) {
+  if (selected.kind === "vector")
+    throw new Error(
+      "Utilisez l’aplatissement de zone pour modifier une illustration vectorielle.",
+    );
   return mutatePdf(doc, (pdf) =>
     withPdfPage(pdf, pageIndex, (page) => {
       const images = pageImages(page);
       const target = images[selected.index];
       if (
         !target ||
-        ["x", "y", "width", "height"].some(
-          (key) =>
-            Math.abs(
-              target[key as keyof NativeImage] -
-                selected[key as keyof NativeImage],
-            ) > 0.1,
+        (["x", "y", "width", "height"] as const).some(
+          (key) => Math.abs(target[key] - selected[key]) > 0.1,
         )
       )
         throw new Error("IMAGE_SELECTION_CHANGED");
       // Redaction affects every intersecting image. Refuse ambiguous overlapping images.
       if (
-        images.some(
-          (image) =>
+        images.some((image) => {
+          const bounds = image.sourceBounds ?? image;
+          return (
             image !== target &&
-            image.x < target.x + target.width &&
-            image.x + image.width > target.x &&
-            image.y < target.y + target.height &&
-            image.y + image.height > target.y,
-        )
+            image.kind !== "vector" &&
+            bounds.x < target.x + target.width &&
+            bounds.x + bounds.width > target.x &&
+            bounds.y < target.y + target.height &&
+            bounds.y + bounds.height > target.y
+          );
+        })
       )
         throw new Error("IMAGE_OVERLAP");
       const [ox, oy] = page.getBounds();

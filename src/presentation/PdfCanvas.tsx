@@ -96,13 +96,17 @@ export function PdfCanvas({
           <Button
             key={image.index}
             className={`native-block contextual-block native-image-block${selectedImage === image ? " selected" : ""}`}
-            aria-label={`${t("Image")} ${image.index + 1}`}
+            aria-label={`${t(image.kind === "vector" ? "Illustration vectorielle" : "Image")} ${image.index + 1}`}
             aria-pressed={selectedImage === image}
             style={{
               left: image.x * scale,
               top: image.y * scale,
               width: image.width * scale,
               height: image.height * scale,
+              zIndex: image.kind === "vector" ? 1 : 2,
+              clipPath: image.polygon
+                ? `polygon(${image.polygon.map((p) => `${((p.x - image.x) / image.width) * 100}% ${((p.y - image.y) / image.height) * 100}%`).join(",")})`
+                : undefined,
             }}
             onClick={(event) => {
               event.stopPropagation();

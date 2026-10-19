@@ -22,6 +22,10 @@ export interface Mark {
   shape?: ShapeKind;
   points?: StrokePoint[];
   imageFit?: "contain" | "cover" | "fill";
+  imageRotation?: 0 | 90 | 180 | 270;
+  imageFlipX?: boolean;
+  imageFlipY?: boolean;
+  imageOpacity?: number;
   lockAspectRatio?: boolean;
   naturalWidth?: number;
   naturalHeight?: number;

@@ -29,6 +29,7 @@ import { useDocumentVersions } from "./useDocumentVersions";
 import { useNativeImages } from "./useNativeImages";
 import { useTableEditor } from "./useTableEditor";
 import { useGraphEditor } from "./useGraphEditor";
+import { useImageEditing } from "./useImageEditing";
 import type { NativeImage } from "../../domain/nativeImage";
 import {
   normalizeStroke,
@@ -385,6 +386,7 @@ export function useEditorController() {
   });
 
   function chooseTool(next: Tool) {
+    if (imageEditing.selecting) imageEditing.cancel();
     if (tableEditor.selecting) tableEditor.cancel();
     if (graphEditor.selecting) graphEditor.cancel();
     clearActionInfo();
@@ -394,6 +396,7 @@ export function useEditorController() {
     if (next === "image") imageInput.current?.click();
   }
   function chooseShape(value: ShapeKind, editSelected = false) {
+    if (imageEditing.selecting) imageEditing.cancel();
     if (tableEditor.selecting) tableEditor.cancel();
     if (graphEditor.selecting) graphEditor.cancel();
     nativeImages.selectImage(undefined);
@@ -556,7 +559,16 @@ export function useEditorController() {
   });
   const tableEditor = useTableEditor(doc, pageIndex, commit, run, t);
   const graphEditor = useGraphEditor(doc, pageIndex, commit, run);
+  const imageEditing = useImageEditing(
+    doc,
+    pageIndex,
+    mark,
+    commit,
+    run,
+    selectMark,
+  );
   return {
+    imageEditing,
     graphEditor,
     tableEditor,
     nativeImages: { ...nativeImages, selectImage: selectNativeImage },

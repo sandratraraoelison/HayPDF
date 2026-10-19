@@ -2,7 +2,39 @@
 import { workbenchTranslations } from "./workbenchTranslations";
 export const translations: Record<string, string> = {
   ...workbenchTranslations,
-  "Un histogramme nécessite une hauteur d’au moins 120 points.": "A bar chart needs a height of at least 120 points.",
+  "Illustration vectorielle": "Vector illustration",
+  "Rendre la zone modifiable": "Make area editable",
+  "Utilisez l’aplatissement de zone pour modifier une illustration vectorielle.":
+    "Use area flattening to edit a vector illustration.",
+  "Les images visibles et certains groupes de formes colorées sont détectés. Les illustrations vectorielles sont des zones estimées : vérifiez le cadre avant de les aplatir. Les masques courbes peuvent avoir un cadre approximatif ; la sélection manuelle reste disponible.":
+    "Visible images and some overlapping colored shape groups are detected. Vector illustrations are estimated areas: check the frame before flattening. Curved masks may have approximate bounds; manual selection remains available.",
+  "Détection des images et illustrations": "Image and illustration detection",
+  "Repérez les images matricielles visibles, y compris dans les objets imbriqués, avec leurs dimensions en pixels, leur rotation et leur recadrage. Les groupes de formes colorées superposées peuvent être proposés comme zones vectorielles à aplatir. Détection vectorielle indicative et contours de masques courbes approximatifs ; sélection manuelle disponible. La suppression isolée reste bloquée quand les images risquent d’interférer.":
+    "Detect visible raster images, including nested objects, with pixel dimensions, rotation and clipping. Overlapping colored shape groups may be suggested as vector areas to flatten. Vector detection is indicative and curved mask bounds approximate; manual selection is available. Individual deletion remains blocked when images may interfere.",
+  "Rendre l’image modifiable": "Make image editable",
+  "Remplacer l’image": "Replace image",
+  "Remplacement local par PNG/JPEG, 20 Mo maximum. La position et le cadre sont conservés.":
+    "Replace locally with PNG/JPEG, up to 20 MB. Position and frame are retained.",
+  "Tourner à gauche": "Rotate left",
+  "Tourner à droite": "Rotate right",
+  "Miroir horizontal": "Flip horizontally",
+  "Miroir vertical": "Flip vertically",
+  "Opacité (%)": "Opacity (%)",
+  "Modifier une illustration par zone": "Edit an illustration by area",
+  "Encadrez l’illustration à rendre modifiable. Son contenu sera aplati en PNG. Échap pour annuler.":
+    "Select the illustration to make editable. Its content will be flattened to PNG. Escape to cancel.",
+  "Pour modifier une image intégrée ou une illustration vectorielle, aplatissez sa zone en PNG. Les textes et formes inclus deviennent une seule image, jusqu’à 216 ppp et 4 096 pixels par côté. Les annotations et formulaires dans la zone sont exclus. Vous pouvez annuler.":
+    "To edit an embedded image or vector illustration, flatten its area to PNG. Included text and shapes become one image, at up to 216 dpi and 4,096 pixels per side. Areas containing annotations or forms are excluded. Undo is available.",
+  "Zone d’image invalide.": "Invalid image area.",
+  "La zone contient une annotation ou un formulaire. Choisissez une zone sans élément interactif.":
+    "The area contains an annotation or form. Choose an area without interactive elements.",
+  "La sélection coupe du texte. Ajustez la zone pour inclure ou exclure les caractères entiers.":
+    "The selection cuts through text. Adjust the area to include or exclude whole characters.",
+  "Modifier les images et illustrations": "Edit images and illustrations",
+  "Déplacez, redimensionnez, remplacez, tournez ou retournez les images ajoutées ; réglez leur opacité et leur cadrage. Rendez une image intégrée ou une zone vectorielle modifiable par aplatissement en PNG : textes et formes inclus perdent leur sélection individuelle. Jusqu’à 216 ppp, 4 096 pixels par côté ; zones avec annotations, formulaires ou texte coupé exclues. Remplacement PNG/JPEG limité à 20 Mo. Annulation disponible.":
+    "Move, resize, replace, rotate or flip added images; adjust opacity and framing. Make an embedded image or vector area editable by flattening to PNG: included text and shapes lose individual selection. Up to 216 dpi, 4,096 pixels per side; areas with annotations, forms or cut text are excluded. PNG/JPEG replacement is limited to 20 MB. Undo is available.",
+  "Un histogramme nécessite une hauteur d’au moins 120 points.":
+    "A bar chart needs a height of at least 120 points.",
   Graphique: "Chart",
   "Modifier le graphique": "Edit chart",
   "Type de graphique": "Chart type",

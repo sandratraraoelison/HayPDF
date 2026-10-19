@@ -1,6 +1,18 @@
 /** Keep this catalog and its translations current whenever features change. */
 export const appFeatures = [
   {
+    icon: "Files",
+    title: "Détection des images et illustrations",
+    summary:
+      "Repérez les images matricielles visibles, y compris dans les objets imbriqués, avec leurs dimensions en pixels, leur rotation et leur recadrage. Les groupes de formes colorées superposées peuvent être proposés comme zones vectorielles à aplatir. Détection vectorielle indicative et contours de masques courbes approximatifs ; sélection manuelle disponible. La suppression isolée reste bloquée quand les images risquent d’interférer.",
+  },
+  {
+    icon: "FilePenLine",
+    title: "Modifier les images et illustrations",
+    summary:
+      "Déplacez, redimensionnez, remplacez, tournez ou retournez les images ajoutées ; réglez leur opacité et leur cadrage. Rendez une image intégrée ou une zone vectorielle modifiable par aplatissement en PNG : textes et formes inclus perdent leur sélection individuelle. Jusqu’à 216 ppp, 4 096 pixels par côté ; zones avec annotations, formulaires ou texte coupé exclues. Remplacement PNG/JPEG limité à 20 Mo. Annulation disponible.",
+  },
+  {
     icon: "FilePenLine",
     title: "Reconstituer un graphique",
     summary:

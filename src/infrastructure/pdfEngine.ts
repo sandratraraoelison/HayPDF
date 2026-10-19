@@ -13,7 +13,7 @@ import {
 } from "pdf-lib";
 import type { DocumentModel, PageModel } from "../domain/document";
 import { uid } from "../domain/document";
-import { imageContentRect } from "../domain/imageLayout";
+import { imagePlacement } from "../domain/imageLayout";
 import { restoreFormRoot } from "./pdfForms";
 import { preserveCatalog } from "./pdfCatalog";
 import { shapePath } from "../domain/shapes";
@@ -131,10 +131,10 @@ export async function exportDocument(
         const image = mark.data.startsWith("data:image/png")
           ? await output.embedPng(mark.data)
           : await output.embedJpg(mark.data);
-        const content = imageContentRect(
+        const placement = imagePlacement(
           mark,
           { width: image.width, height: image.height },
-          mark.imageFit ?? "contain",
+          mark,
         );
         const angle = (model.rotation * Math.PI) / 180;
         page.pushOperators(
@@ -151,11 +151,13 @@ export async function exportDocument(
           clip(),
           endPath(),
         );
+        page.pushOperators(concatTransformationMatrix(...placement.pdf));
         page.drawImage(image, {
-          x: content.x,
-          y: mark.height - content.y - content.height,
-          width: content.width,
-          height: content.height,
+          x: 0,
+          y: 0,
+          width: 1,
+          height: 1,
+          opacity: mark.imageOpacity ?? 1,
         });
         page.pushOperators(popGraphicsState());
       } else if (mark.kind === "rectangle") {

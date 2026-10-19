@@ -486,8 +486,8 @@ app.whenReady().then(async () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
     if (
       (await window.webContents.executeJavaScript(
-        `document.querySelector('.canvas-scroll .image-content img').style.objectFit`,
-      )) !== "cover"
+        `(()=>{const frame=document.querySelector('.canvas-scroll .image-content').getBoundingClientRect(),image=document.querySelector('.canvas-scroll .image-content image').getBoundingClientRect();return document.querySelector('.image-properties select').value==='cover' && image.width>=frame.width-.1 && image.height>=frame.height-.1;})()`,
+      )) !== true
     )
       throw new Error("Image fit control failed");
     const freeCorner = await window.webContents.executeJavaScript(
@@ -607,6 +607,8 @@ app.whenReady().then(async () => {
     await require("./shapes-checks.cjs")(window);
     await require("./tables-checks.cjs")(window);
     await require("./graphs-checks.cjs")(window);
+    await require("./image-editing-checks.cjs")(window,pngBytes);
+    await require("./image-detection-checks.cjs")(window, pngBytes);
     console.log("Electron smoke OK", result);
     app.exit(0);
   } catch (error) {

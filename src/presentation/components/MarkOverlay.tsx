@@ -3,6 +3,7 @@ import type { Bounds, Rect } from "../../domain/imageLayout";
 import { useMarkTransform } from "../hooks/useMarkTransform";
 import { ImageResizeHandles } from "./ImageResizeHandles";
 import { shapePath } from "../../domain/shapes";
+import { ImageContent } from "./ImageContent";
 interface MarkOverlayProps {
   mark: Mark;
   scale: number;
@@ -63,11 +64,10 @@ export function MarkOverlay({
       {mark.kind === "image" ? (
         <>
           <div className="image-content">
-            <img
-              draggable={false}
-              src={mark.data}
-              alt={t("Image ajoutée")}
-              style={{ objectFit: mark.imageFit ?? "contain" }}
+            <ImageContent
+              mark={mark}
+              frame={transform.rect}
+              label={t("Image ajoutée")}
             />
           </div>
           {selected && onResize && (

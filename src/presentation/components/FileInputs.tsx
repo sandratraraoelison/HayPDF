@@ -9,9 +9,21 @@ export function FileInputs() {
     loadFont,
     load,
     loadImage,
+    imageEditing,
   } = useEditor();
   return (
     <>
+      <input
+        ref={imageEditing.replacementInput}
+        className="image-replacement-input"
+        type="file"
+        accept=".png,.jpg,.jpeg"
+        hidden
+        onChange={(event) => {
+          void imageEditing.loadReplacement(event.target.files?.[0]);
+          event.target.value = "";
+        }}
+      />
       <input
         ref={fontInput}
         type="file"

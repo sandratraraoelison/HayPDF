@@ -26,6 +26,7 @@ export function useNativeImages({
   const [selectedImage, selectImage] = useState<NativeImage>();
   const [loadingImages, setLoading] = useState(false);
   const [imageError, setError] = useState("");
+  const sourcePage = doc?.pages[pageIndex];
   useEffect(() => {
     let active = true;
     setImages([]);
@@ -54,7 +55,13 @@ export function useNativeImages({
     return () => {
       active = false;
     };
-  }, [doc, pageIndex]);
+  }, [
+    doc?.sources,
+    sourcePage?.id,
+    sourcePage?.source,
+    sourcePage?.index,
+    sourcePage?.rotation,
+  ]);
   async function deleteImage() {
     if (!doc || !selectedImage) return;
     await run(async () => {

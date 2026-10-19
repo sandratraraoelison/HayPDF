@@ -26,6 +26,7 @@ export function DocumentWorkspace() {
     drawFreehand,
     tableEditor,
     graphEditor,
+    imageEditing,
   } = useEditor();
   return (
     <main>
@@ -38,21 +39,25 @@ export function DocumentWorkspace() {
               {pageIndex + 1}
             </span>
             <span>
-              {graphEditor.selecting
+              {imageEditing.selecting
                 ? t(
-                    "Encadrez le graphique entier, titre et légende compris. Échap pour annuler.",
+                    "Encadrez l’illustration à rendre modifiable. Son contenu sera aplati en PNG. Échap pour annuler.",
                   )
-                : tableEditor.selecting
+                : graphEditor.selecting
                   ? t(
-                      "Encadrez un seul tableau, bordures comprises. Échap pour annuler.",
+                      "Encadrez le graphique entier, titre et légende compris. Échap pour annuler.",
                     )
-                  : tool === "rectangle" && shape === "freehand"
-                    ? t("Tracez sur la page. Échap annule le trait en cours.")
-                    : tool === "select"
-                      ? t("Sélectionnez et déplacez vos éléments")
-                      : tool === "native"
-                        ? t("Cliquez sur un bloc de texte du PDF.")
-                        : t("Cliquez sur la page pour ajouter un élément")}
+                  : tableEditor.selecting
+                    ? t(
+                        "Encadrez un seul tableau, bordures comprises. Échap pour annuler.",
+                      )
+                    : tool === "rectangle" && shape === "freehand"
+                      ? t("Tracez sur la page. Échap annule le trait en cours.")
+                      : tool === "select"
+                        ? t("Sélectionnez et déplacez vos éléments")
+                        : tool === "native"
+                          ? t("Cliquez sur un bloc de texte du PDF.")
+                          : t("Cliquez sur la page pour ajouter un élément")}
             </span>
           </div>
           <div className="canvas-scroll" ref={canvasScroll}>
@@ -63,26 +68,33 @@ export function DocumentWorkspace() {
               selected={selected}
               onAreaSelect={
                 !busy
-                  ? graphEditor.selecting
-                    ? graphEditor.select
-                    : tableEditor.selecting
-                      ? tableEditor.select
-                      : undefined
+                  ? imageEditing.selecting
+                    ? imageEditing.selectArea
+                    : graphEditor.selecting
+                      ? graphEditor.select
+                      : tableEditor.selecting
+                        ? tableEditor.select
+                        : undefined
                   : undefined
               }
               areaLabel={
-                graphEditor.selecting
+                imageEditing.selecting
                   ? t(
-                      "Encadrez le graphique entier, titre et légende compris. Échap pour annuler.",
+                      "Encadrez l’illustration à rendre modifiable. Son contenu sera aplati en PNG. Échap pour annuler.",
                     )
-                  : undefined
+                  : graphEditor.selecting
+                    ? t(
+                        "Encadrez le graphique entier, titre et légende compris. Échap pour annuler.",
+                      )
+                    : undefined
               }
               onFreehand={
                 tool === "rectangle" &&
                 shape === "freehand" &&
                 !busy &&
                 !tableEditor.selecting &&
-                !graphEditor.selecting
+                !graphEditor.selecting &&
+                !imageEditing.selecting
                   ? drawFreehand
                   : undefined
               }
@@ -119,6 +131,11 @@ export function DocumentWorkspace() {
       {graphEditor.error && !graphEditor.draft && (
         <p className="table-error" role="alert">
           {t(graphEditor.error)}
+        </p>
+      )}
+      {imageEditing.error && (
+        <p role="alert" className="table-error">
+          {t(imageEditing.error)}
         </p>
       )}
       <ViewControls />

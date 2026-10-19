@@ -8,6 +8,59 @@ export interface Bounds {
   width: number;
   height: number;
 }
+export function imagePlacement(
+  frame: Bounds,
+  natural: Bounds,
+  options: {
+    imageFit?: "contain" | "cover" | "fill";
+    imageRotation?: 0 | 90 | 180 | 270;
+    imageFlipX?: boolean;
+    imageFlipY?: boolean;
+  },
+) {
+  const angle = options.imageRotation ?? 0;
+  const rotated = angle === 90 || angle === 270;
+  const rect = imageContentRect(
+    frame,
+    rotated ? { width: natural.height, height: natural.width } : natural,
+    options.imageFit ?? "contain",
+  );
+  let [a, b, c, d, e, f] =
+    angle === 90
+      ? [0, 1, -1, 0, 1, 0]
+      : angle === 180
+        ? [-1, 0, 0, -1, 1, 1]
+        : angle === 270
+          ? [0, -1, 1, 0, 0, 1]
+          : [1, 0, 0, 1, 0, 0];
+  if (options.imageFlipX) {
+    a = -a;
+    c = -c;
+    e = 1 - e;
+  }
+  if (options.imageFlipY) {
+    b = -b;
+    d = -d;
+    f = 1 - f;
+  }
+  const svg: [number, number, number, number, number, number] = [
+    a * rect.width,
+    b * rect.height,
+    c * rect.width,
+    d * rect.height,
+    rect.x + e * rect.width,
+    rect.y + f * rect.height,
+  ];
+  const pdf: [number, number, number, number, number, number] = [
+    svg[0],
+    -svg[1],
+    -svg[2],
+    svg[3],
+    svg[2] + svg[4],
+    frame.height - svg[3] - svg[5],
+  ];
+  return { svg, pdf };
+}
 export type ResizeHandle = "nw" | "n" | "ne" | "e" | "se" | "s" | "sw" | "w";
 export function imageContentRect(
   frame: Bounds,

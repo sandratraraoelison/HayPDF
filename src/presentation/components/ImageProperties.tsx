@@ -1,10 +1,17 @@
-import { Trash2 } from "lucide-react";
+import {
+  Trash2,
+  Replace,
+  RotateCw,
+  RotateCcw,
+  FlipHorizontal2,
+  FlipVertical2,
+} from "lucide-react";
 import { useEditor } from "../EditorContext";
 import { NumberField } from "../ui/NumberField";
 import { Button } from "../ui/Button";
 import type { Mark } from "../../domain/document";
 export function ImageProperties() {
-  const { mark, updateMark, deleteSelected, t } = useEditor();
+  const { mark, updateMark, deleteSelected, t, imageEditing } = useEditor();
   if (mark?.kind !== "image") return null;
   return (
     <section className="image-properties">
@@ -14,6 +21,68 @@ export function ImageProperties() {
           "Déplacez l’image ou tirez ses poignées. Maj inverse temporairement le verrouillage des proportions.",
         )}
       </p>
+      <Button variant="secondary" onClick={imageEditing.requestReplace}>
+        <Replace size={16} />
+        {t("Remplacer l’image")}
+      </Button>
+      <p>
+        {t(
+          "Remplacement local par PNG/JPEG, 20 Mo maximum. La position et le cadre sont conservés.",
+        )}
+      </p>
+      <div className="image-adjustments">
+        <Button
+          title={t("Tourner à gauche")}
+          aria-label={t("Tourner à gauche")}
+          onClick={() =>
+            updateMark({
+              imageRotation: (((mark.imageRotation ?? 0) + 270) %
+                360) as Mark["imageRotation"],
+              width: mark.height,
+              height: mark.width,
+            })
+          }
+        >
+          <RotateCcw size={18} />
+        </Button>
+        <Button
+          title={t("Tourner à droite")}
+          aria-label={t("Tourner à droite")}
+          onClick={() =>
+            updateMark({
+              imageRotation: (((mark.imageRotation ?? 0) + 90) %
+                360) as Mark["imageRotation"],
+              width: mark.height,
+              height: mark.width,
+            })
+          }
+        >
+          <RotateCw size={18} />
+        </Button>
+        <Button
+          title={t("Miroir horizontal")}
+          aria-label={t("Miroir horizontal")}
+          aria-pressed={!!mark.imageFlipX}
+          onClick={() => updateMark({ imageFlipX: !mark.imageFlipX })}
+        >
+          <FlipHorizontal2 size={18} />
+        </Button>
+        <Button
+          title={t("Miroir vertical")}
+          aria-label={t("Miroir vertical")}
+          aria-pressed={!!mark.imageFlipY}
+          onClick={() => updateMark({ imageFlipY: !mark.imageFlipY })}
+        >
+          <FlipVertical2 size={18} />
+        </Button>
+      </div>
+      <NumberField
+        label={t("Opacité (%)")}
+        value={Math.round((mark.imageOpacity ?? 1) * 100)}
+        min={0}
+        max={100}
+        onChange={(value) => updateMark({ imageOpacity: value / 100 })}
+      />
       <div className="property-row">
         <NumberField
           label={t("Largeur")}
@@ -69,7 +138,10 @@ export function ImageProperties() {
           onClick={() =>
             updateMark({
               width: mark.width,
-              height: (mark.width * mark.naturalHeight!) / mark.naturalWidth!,
+              height:
+                mark.imageRotation === 90 || mark.imageRotation === 270
+                  ? (mark.width * mark.naturalWidth!) / mark.naturalHeight!
+                  : (mark.width * mark.naturalHeight!) / mark.naturalWidth!,
               lockAspectRatio: true,
               imageFit: "contain",
             })

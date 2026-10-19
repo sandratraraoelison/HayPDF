@@ -102,6 +102,7 @@ app.whenReady().then(async () => {
     );
     if (!loaded.canvas || loaded.error || errors.length)
       throw new Error(JSON.stringify({ loaded, errors }));
+    await require("./conversion-checks.cjs")(window, bytes);
     await require("./versions-checks.cjs")(window);
     await window.webContents.executeJavaScript(
       `[...document.querySelectorAll('.tools button')].find(b=>b.textContent==='Texte natif').click()`,

@@ -2,6 +2,42 @@
 import { workbenchTranslations } from "./workbenchTranslations";
 export const translations: Record<string, string> = {
   ...workbenchTranslations,
+  "Convertir et exporter": "Convert and export",
+  "Convertir un PDF": "Convert a PDF",
+  Convertir: "Convert",
+  "Export local vers Word DOCX, Excel XLSX, PowerPoint PPTX et RTF. OCR français, anglais ou bilingue pour les pages sans texte. Word/RTF : texte ; Excel : lignes et cellules ; PowerPoint : pages en images.":
+    "Local export to Word DOCX, Excel XLSX, PowerPoint PPTX and RTF. French, English or bilingual OCR for pages without text. Word/RTF: text; Excel: rows and cells; PowerPoint: image-based pages.",
+  "Formats d’export disponibles": "Available export formats",
+  "Microsoft Word (.docx)": "Microsoft Word (.docx)",
+  "Microsoft PowerPoint (.pptx)": "Microsoft PowerPoint (.pptx)",
+  "Microsoft Excel (.xlsx)": "Microsoft Excel (.xlsx)",
+  "Texte enrichi (.rtf)": "Rich text (.rtf)",
+  "Image PNG (.png)": "PNG image (.png)",
+  "Image JPEG (.jpg)": "JPEG image (.jpg)",
+  "Copie PDF avec vos modifications.": "PDF copy with your edits.",
+  "Texte modifiable, avec séparation des pages. La mise en page complexe et les images ne sont pas reconstruites.":
+    "Editable text, separated by page. Complex layout and images are not reconstructed.",
+  "Une diapositive par page, sous forme d’image fidèle au PDF. Le texte des diapositives n’est pas modifiable.":
+    "One slide per page, rendered as an image of the PDF. Slide text is not editable.",
+  "Une feuille par page, une ligne par ligne de texte. Tabulations et espaces multiples séparent les cellules ; vérifiez les tableaux après conversion.":
+    "One sheet per page, one row per line of text. Tabs and multiple spaces separate cells; review tables after conversion.",
+  "Texte modifiable compatible avec les traitements de texte. Images et mise en page complexe non conservées.":
+    "Editable text compatible with word processors. Images and complex layout are not retained.",
+  "Images des pages, avec vos annotations et modifications.":
+    "Page images including your annotations and edits.",
+  "Texte recherchable extrait des pages sélectionnées.":
+    "Searchable text extracted from selected pages.",
+  "Langue du texte scanné (OCR)": "Scanned text language (OCR)",
+  "Sans OCR : texte existant uniquement": "No OCR: existing text only",
+  Français: "French",
+  Anglais: "English",
+  "Français et anglais": "French and English",
+  "L’OCR s’applique aux pages sans texte recherchable. Il peut être plus lent et nécessite une relecture.":
+    "OCR applies to pages without searchable text. It may take longer and requires review.",
+  "Aucun texte extrait. Activez l’OCR pour les pages scannées ou choisissez un export en images.":
+    "No text extracted. Enable OCR for scanned pages or choose image export.",
+  "Le texte dépasse les limites du format choisi. Sélectionnez moins de pages ou exportez en texte brut.":
+    "Text exceeds the chosen format limits. Select fewer pages or export plain text.",
   "À propos de HayPDF": "About HayPDF",
   "Version actuelle": "Current version",
   "Votre atelier PDF local, en français et en anglais. Modifiez, organisez et préparez vos documents depuis une seule interface.":

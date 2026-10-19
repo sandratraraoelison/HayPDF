@@ -1,4 +1,8 @@
 import type { FormValue } from "../domain/formField";
+import type {
+  OfficeExportFormat,
+  RecognitionLanguage,
+} from "../domain/conversion";
 
 export type DocumentTool =
   | "create"
@@ -9,7 +13,8 @@ export type DocumentTool =
   | "form-data"
   | "office";
 export interface DocumentToolOptions {
-  format: "pdf" | "png" | "jpeg" | "text";
+  format: "pdf" | "png" | "jpeg" | "text" | OfficeExportFormat;
+  recognition?: RecognitionLanguage;
   ranges: string;
   dpi: number;
   password: string;
@@ -23,7 +28,7 @@ export interface DocumentToolOptions {
 }
 export const documentToolLabels: Record<DocumentTool, string> = {
   create: "Créer un PDF",
-  export: "Exporter un PDF",
+  export: "Convertir et exporter",
   split: "Diviser un PDF",
   compress: "Compresser un PDF",
   protect: "Protéger un PDF",

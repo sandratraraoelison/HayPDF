@@ -3,10 +3,12 @@ import { loadPreview } from "./pdfPreview";
 import type { DocumentModel, Mark, PageModel } from "../domain/document";
 import { uid } from "../domain/document";
 import { exportDocument } from "./pdfEngine";
+import type { RecognitionLanguage } from "../domain/conversion";
 export async function recognizePage(
   doc: DocumentModel,
   page: PageModel,
   onProgress: (progress: number) => void,
+  language: Exclude<RecognitionLanguage, "none"> = "fra+eng",
 ): Promise<Mark[]> {
   const visiblePage = {
     ...page,
@@ -26,7 +28,7 @@ export async function recognizePage(
     await pdfPage.render({ canvas, viewport }).promise;
     const base = new URL(`${import.meta.env.BASE_URL}ocr/`, document.baseURI)
       .href;
-    worker = await createWorker(["fra", "eng"], 1, {
+    worker = await createWorker(language.split("+"), 1, {
       workerPath: `${base}worker.min.js`,
       corePath: base,
       langPath: base,

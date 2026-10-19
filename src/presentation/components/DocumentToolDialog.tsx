@@ -8,6 +8,7 @@ import {
 } from "../../application/documentTools";
 import { FormFieldInputs } from "./FormFieldInputs";
 import { OperationErrorDetails } from "./OperationErrorDetails";
+import { ExportFormatFields } from "./ExportFormatFields";
 
 export function DocumentToolDialog() {
   const {
@@ -170,41 +171,7 @@ export function DocumentToolDialog() {
             </>
           )}
           {tool === "export" && (
-            <>
-              <label>
-                {t("Format")}
-                <select
-                  value={options.format}
-                  onChange={(e) =>
-                    setOptions({
-                      ...options,
-                      format: e.target.value as DocumentToolOptions["format"],
-                    })
-                  }
-                >
-                  <option value="pdf">PDF</option>
-                  <option value="png">PNG</option>
-                  <option value="jpeg">JPEG</option>
-                  <option value="text">{t("Texte brut (.txt)")}</option>
-                </select>
-              </label>
-              {(options.format === "png" || options.format === "jpeg") && (
-                <>
-                  <NumberField
-                    label={t("Résolution (DPI)")}
-                    value={options.dpi}
-                    min={72}
-                    max={300}
-                    onChange={(dpi) => setOptions({ ...options, dpi })}
-                  />
-                  <p>
-                    {t(
-                      "Plusieurs pages : archive ZIP. Le côté le plus long est limité à 5 000 pixels.",
-                    )}
-                  </p>
-                </>
-              )}
-            </>
+            <ExportFormatFields options={options} onChange={setOptions} t={t} />
           )}
           {(tool === "export" || tool === "split") && (
             <label>
@@ -326,7 +293,13 @@ export function DocumentToolDialog() {
             type="submit"
             disabled={busy || (tool === "form-data" && !formFields.length)}
           >
-            {t(busy ? "Traitement…" : "Appliquer")}
+            {t(
+              busy
+                ? "Traitement…"
+                : tool === "export" || tool === "office"
+                  ? "Convertir"
+                  : "Appliquer",
+            )}
           </Button>
         </div>
       </form>

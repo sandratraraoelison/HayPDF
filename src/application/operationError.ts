@@ -16,6 +16,10 @@ export function describeOperationError(
     code === "NATIVE_FONT_UNAVAILABLE" || code === "NATIVE_FONT_MISSING_GLYPH";
   let summary: string;
   const toolErrors: Record<string, string> = {
+    NO_EXTRACTABLE_TEXT:
+      "Aucun texte extrait. Activez l’OCR pour les pages scannées ou choisissez un export en images.",
+    CONVERSION_LIMIT:
+      "Le texte dépasse les limites du format choisi. Sélectionnez moins de pages ou exportez en texte brut.",
     ARCHIVE_VALIDATION_FAILED:
       "La validation PDF/A a échoué. Consultez le rapport avant d’exporter.",
     INVALID_TAG_ORDER:

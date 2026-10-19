@@ -105,6 +105,13 @@
   font-size: 11px;
   padding: 12px 0;
 }
+.conversion-description {
+  padding: 12px;
+  background: var(--surface-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  font-size: 12px;
+}
 .about-footer {
   display: flex;
   flex-wrap: wrap;

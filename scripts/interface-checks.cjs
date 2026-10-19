@@ -21,9 +21,10 @@ module.exports = async function checkInterface(window) {
       metadata.version,
     ),
   );
-  assert.equal(
-    await js(`document.querySelectorAll('.about-features article').length`),
-    7,
+  assert.ok(
+    await js(
+      `document.querySelectorAll('.about-features article').length >= 8 && document.querySelector('.about-dialog').textContent.includes('Microsoft Word (.docx)') && document.querySelector('.about-dialog').textContent.includes('Microsoft Excel (.xlsx)')`,
+    ),
   );
   assert.equal(
     await js(`document.querySelector('.about-contact').getAttribute('href')`),

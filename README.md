@@ -15,7 +15,8 @@ npm run dev
 
 ## Fonctionnalités
 
-- Logo HayPDF : document, initiale H et crayon, utilisé dans l’interface, le favicon et l’icône Windows. Cliquez sur la marque dans l’en-tête pour ouvrir « À propos » : version issue de `package.json`, résumé des fonctions, prérequis, contact et copyright de SandratraRaoelison.
+- Conversion PDF vers Word DOCX, Excel XLSX, PowerPoint PPTX et RTF, entièrement locale. DOCX/RTF : récupération du texte modifiable sans reconstruction des images et de la mise en page complexe. XLSX : une feuille par page et cellules séparées par tabulations/espaces multiples, sans détection sémantique des tableaux. PPTX : une image de page par diapositive, sans texte éditable. OCR français, anglais ou bilingue en option pour les pages sans texte recherchable ; une relecture est nécessaire.
+- Logo HayPDF : document, initiale H et crayon, utilisé dans l’interface, le favicon et l’icône Windows. Cliquez sur la marque dans l’en-tête pour ouvrir « À propos » : version issue de `package.json`, résumé des fonctions, prérequis, contact et copyright de Sandratra RAOELISON.
 - Atelier de versions : enregistrer des étapes nommées, comparer la page courante avec le rendu PDF actuel (avant/après et différences en rouge), puis restaurer une étape avec annulation possible. Versions locales en mémoire, limitées à la session du document et effacées à l’ouverture d’un autre document ou à la fermeture de l’application.
 - Interface contextuelle : propriétés selon la sélection, organisation dans l’onglet Pages, catalogue avec recherche sans accents, thèmes clair/sombre et navigation au clavier.
 - Ouverture par sélection de fichier ou glisser-déposer, rendu PDF.js et miniatures.

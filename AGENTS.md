@@ -7,4 +7,5 @@
 - Conserver le domaine indépendant de React et des bibliothèques PDF. Isoler les moteurs PDF/OCR et les accès fichiers dans `src/infrastructure`.
 - Ne pas modifier les sources PDF ou les snapshots d'historique en place. Conserver l'annulation/rétablissement et le traitement local des fichiers.
 - Ajouter les nouveaux libellés au dictionnaire français/anglais et utiliser les variables CSS des thèmes.
+- À chaque ajout ou modification d’une fonction, actualiser le catalogue `src/application/appFeatures.ts` utilisé par « À propos », ses traductions français/anglais et les limites/prérequis affichés. Ne présenter comme disponible qu’une fonction implémentée et vérifiée. Le nom de l’auteur est « Sandratra RAOELISON » ; version et contact proviennent de `package.json`.
 - Après une modification structurelle : `npm run build`, `npm test`, puis `npm run smoke` pour le parcours Electron. Ne pas ajouter de tests qui ne font que recopier l'implémentation.

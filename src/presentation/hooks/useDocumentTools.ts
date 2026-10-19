@@ -18,6 +18,7 @@ import { compressPdf, protectPdf } from "../../infrastructure/pdfSecurity";
 import { exportDocument, readDocument } from "../../infrastructure/pdfEngine";
 import { saveFile } from "../../infrastructure/fileGateway";
 import { parsePageSelection } from "../../domain/pageSelection";
+import { isOfficeExport } from "../../domain/conversion";
 import {
   readFormFields,
   fillFormFields,
@@ -114,24 +115,35 @@ export function useDocumentTools({
         const name = doc.name.replace(/\.pdf$/i, "");
         if (documentTool === "export") {
           const indices = parsePageSelection(options.ranges, doc.pages.length);
-          file =
-            options.format === "pdf"
-              ? {
-                  name: `${name}-export.pdf`,
-                  mime: "application/pdf",
-                  bytes: await exportDocument(
-                    doc,
-                    indices.map((index) => doc.pages[index]),
-                  ),
-                }
-              : options.format === "text"
-                ? await exportPlainText(doc, indices)
-                : await exportPageImages(
-                    doc,
-                    indices,
-                    options.format,
-                    options.dpi,
-                  );
+          if (isOfficeExport(options.format)) {
+            const { exportOfficeDocument } =
+              await import("../../infrastructure/officeExport");
+            file = await exportOfficeDocument(
+              doc,
+              indices,
+              options.format,
+              options.recognition,
+            );
+          } else {
+            file =
+              options.format === "pdf"
+                ? {
+                    name: `${name}-export.pdf`,
+                    mime: "application/pdf",
+                    bytes: await exportDocument(
+                      doc,
+                      indices.map((index) => doc.pages[index]),
+                    ),
+                  }
+                : options.format === "text"
+                  ? await exportPlainText(doc, indices)
+                  : await exportPageImages(
+                      doc,
+                      indices,
+                      options.format,
+                      options.dpi,
+                    );
+          }
         } else if (documentTool === "split")
           file = await splitDocument(doc, options.ranges);
         else if (documentTool === "protect") {

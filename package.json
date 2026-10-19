@@ -1,8 +1,8 @@
 {
   "name": "haypdf",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
-    "name": "SandratraRaoelison",
+    "name": "Sandratra RAOELISON",
     "email": "raoelisonsandratra@gmail.com"
   },
   "description": "Éditeur PDF local avec Electron, React et TypeScript",
@@ -28,11 +28,14 @@
     "@tesseract.js-data/eng": "^1.0.0",
     "@tesseract.js-data/fra": "^1.0.0",
     "diff": "^9.0.0",
+    "docx": "^9.12.0",
+    "exceljs": "^4.4.0",
     "fflate": "^0.8.3",
     "lucide-react": "^1.59.0",
     "mupdf": "^1.28.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.4.299",
+    "pptxgenjs": "^4.0.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "tesseract.js": "^7.0.0"
@@ -53,8 +56,16 @@
     "wait-on": "^9.5.1"
   },
   "private": true,
+  "overrides": {
+    "pptxgenjs": {
+      "image-size": "^2.0.4"
+    },
+    "exceljs": {
+      "uuid": "^11.1.1"
+    }
+  },
   "build": {
-    "copyright": "Copyright © 2026 SandratraRaoelison",
+    "copyright": "Copyright © 2026 Sandratra RAOELISON",
     "extraResources": [
       {
         "from": "vendor/validation",

@@ -39,6 +39,112 @@
 .workbench-heading h2 {
   margin: 0;
 }
+.brand-logo {
+  display: block;
+  flex-shrink: 0;
+  margin-right: 9px;
+}
+.advanced-dialog.about-dialog {
+  width: min(850px, 92vw);
+}
+.about-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.about-heading h2 {
+  margin: 0 0 8px;
+}
+.about-heading > button {
+  margin-left: auto;
+  padding: 8px;
+  border-radius: 6px;
+}
+.about-version {
+  display: inline-block;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+.about-intro {
+  margin: 22px 0;
+}
+.about-dialog > h3 {
+  font-size: 13px;
+  margin: 24px 0 14px;
+}
+.about-features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.about-features article {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+.about-features article > svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.about-features h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+.about-features p {
+  margin: 0;
+  font-size: 12px;
+}
+.about-requirements {
+  font-size: 11px;
+  padding: 12px 0;
+}
+.about-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  font-size: 12px;
+}
+.about-footer > div,
+.about-contact span {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.about-footer span {
+  color: var(--muted);
+}
+.about-contact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.about-contact:hover strong {
+  text-decoration: underline;
+}
+.about-contact strong {
+  color: var(--accent);
+}
+.about-footer small {
+  width: 100%;
+  color: var(--muted);
+}
+@media (max-width: 650px) {
+  .about-features {
+    grid-template-columns: 1fr;
+  }
+}
 .advanced-dialog.versions-dialog {
   width: min(1100px, 94vw);
 }

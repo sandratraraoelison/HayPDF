@@ -1,6 +1,10 @@
 {
   "name": "haypdf",
   "version": "1.0.0",
+  "author": {
+    "name": "SandratraRaoelison",
+    "email": "raoelisonsandratra@gmail.com"
+  },
   "description": "Éditeur PDF local avec Electron, React et TypeScript",
   "main": "electron/main.cjs",
   "scripts": {
@@ -50,6 +54,7 @@
   },
   "private": true,
   "build": {
+    "copyright": "Copyright © 2026 SandratraRaoelison",
     "extraResources": [
       {
         "from": "vendor/validation",
@@ -61,6 +66,9 @@
     ],
     "appId": "com.haypdf.editor",
     "productName": "HayPDF",
+    "win": {
+      "icon": "electron/icon.ico"
+    },
     "directories": {
       "output": "release"
     },

@@ -1,4 +1,12 @@
-const { app, BrowserWindow, dialog, ipcMain, Menu } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  Menu,
+  shell,
+} = require("electron");
+const contactUrl = `mailto:${require("../package.json").author.email}`;
 const path = require("node:path");
 const fs = require("node:fs/promises");
 const { convertOffice } = require("./officeConverter.cjs");
@@ -107,6 +115,7 @@ app.whenReady().then(() => {
       minWidth: 1000,
       minHeight: 700,
       backgroundColor: "#19171f",
+      icon: path.join(__dirname, "icon.png"),
       autoHideMenuBar: true,
       webPreferences: {
         preload: path.join(__dirname, "preload.cjs"),
@@ -115,7 +124,10 @@ app.whenReady().then(() => {
         nodeIntegration: false,
       },
     });
-    window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+    window.webContents.setWindowOpenHandler(({ url }) => {
+      if (url === contactUrl) void shell.openExternal(url).catch(console.error);
+      return { action: "deny" };
+    });
     window.webContents.on("will-navigate", (event) => event.preventDefault());
     if (!app.isPackaged && process.env.HAYPDF_DEV === "1")
       window.loadURL("http://127.0.0.1:5173");

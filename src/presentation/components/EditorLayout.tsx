@@ -13,6 +13,7 @@ import { UnlockPdfDialog } from "./UnlockPdfDialog";
 import { useWorkbench } from "../WorkbenchContext";
 import { WorkbenchDialog } from "./WorkbenchDialog";
 import { VersionsDialog } from "./VersionsDialog";
+import { AboutDialog } from "./AboutDialog";
 export function EditorLayout() {
   const { feature } = useWorkbench();
   const {
@@ -24,6 +25,7 @@ export function EditorLayout() {
     documentTool,
     lockedFile,
     showVersions,
+    showAbout,
   } = useEditor();
   const dropHandlers = usePdfDrop();
   return (
@@ -40,6 +42,7 @@ export function EditorLayout() {
       {documentTool && <DocumentToolDialog key={documentTool} />}
       {lockedFile && <UnlockPdfDialog />}
       {showVersions && <VersionsDialog />}
+      {showAbout && <AboutDialog />}
       {feature && <WorkbenchDialog key={feature} />}
       {showShortcuts && (
         <ShortcutHelp t={t} onClose={() => setShowShortcuts(false)} />

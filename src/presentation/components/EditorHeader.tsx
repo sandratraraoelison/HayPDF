@@ -4,12 +4,12 @@ import {
   Download,
   FileText,
   FolderOpen,
-  Layers,
   Moon,
   Sun,
   Keyboard,
   History,
 } from "lucide-react";
+import { BrandLogo } from "./BrandLogo";
 export function EditorHeader() {
   const {
     language,
@@ -23,6 +23,7 @@ export function EditorHeader() {
     input,
     save,
     openVersions,
+    setShowAbout,
   } = useEditor();
   return (
     <header>
@@ -34,13 +35,16 @@ export function EditorHeader() {
       >
         <Keyboard size={18} />
       </Button>
-      <a className="brand" href="#">
-        <span className="logo">
-          <Layers size={23} />
-        </span>
+      <Button
+        className="brand"
+        onClick={() => setShowAbout(true)}
+        title={t("À propos de HayPDF")}
+        aria-label={t("À propos de HayPDF")}
+      >
+        <BrandLogo />
         hay<span>pdf</span>
         <small>{t("ATELIER PDF")}</small>
-      </a>
+      </Button>
       <div className="document-name">
         <FileText size={16} />
         {doc?.name || t("Votre prochain document commence ici")}

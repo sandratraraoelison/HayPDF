@@ -12,6 +12,53 @@ module.exports = async function checkInterface(window) {
       (await window.webContents.capturePage()).toPNG(),
     );
   };
+  const metadata = require("../package.json");
+  await js(`document.querySelector('.brand').click()`);
+  await pause();
+  assert.ok(await js(`!!document.querySelector('.about-dialog[open]')`));
+  assert.ok(
+    (await js(`document.querySelector('.about-version').textContent`)).includes(
+      metadata.version,
+    ),
+  );
+  assert.equal(
+    await js(`document.querySelectorAll('.about-features article').length`),
+    7,
+  );
+  assert.equal(
+    await js(`document.querySelector('.about-contact').getAttribute('href')`),
+    `mailto:${metadata.author.email}`,
+  );
+  assert.ok(
+    (
+      await js(`document.querySelector('.about-footer small').textContent`)
+    ).includes(metadata.author.name),
+  );
+  assert.ok(
+    await js(
+      `document.querySelector('.about-heading img').complete && document.querySelector('.about-heading img').naturalWidth > 0`,
+    ),
+  );
+  await screenshot("interface-about.png");
+  await js(`document.querySelector('.about-heading button').click()`);
+  await pause();
+  await js(
+    `(() => {const select=document.querySelector('.language-select');Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(select,'en');select.dispatchEvent(new Event('change',{bubbles:true}));})()`,
+  );
+  await pause();
+  await js(`document.querySelector('.brand').click()`);
+  await pause();
+  assert.ok(
+    await js(
+      `document.querySelector('#about-title').textContent === 'About HayPDF' && document.querySelector('.about-dialog').textContent.includes('Available features') && document.querySelector('.about-footer').textContent.includes('Created by')`,
+    ),
+  );
+  await js(`document.querySelector('.about-heading button').click()`);
+  await pause();
+  await js(
+    `(() => {const select=document.querySelector('.language-select');Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(select,'fr');select.dispatchEvent(new Event('change',{bubbles:true}));})()`,
+  );
+  await pause();
   assert.equal(
     await js(
       `document.querySelectorAll('.properties input, .properties textarea, .properties select').length`,

@@ -2,9 +2,40 @@
 import { workbenchTranslations } from "./workbenchTranslations";
 export const translations: Record<string, string> = {
   ...workbenchTranslations,
+  "À propos de HayPDF": "About HayPDF",
+  "Version actuelle": "Current version",
+  "Votre atelier PDF local, en français et en anglais. Modifiez, organisez et préparez vos documents depuis une seule interface.":
+    "Your local PDF workspace, in French and English. Edit, organize and prepare documents in one place.",
+  "Fonctions disponibles": "Available features",
+  "Modifier et annoter": "Edit and annotate",
+  "Remplacez le texte natif, ajoutez du texte, des images, des formes, des signatures et des tampons.":
+    "Replace native text, add text, images, shapes, signatures and stamps.",
+  "Organiser et exporter": "Organize and export",
+  "Fusionnez, dupliquez, pivotez et divisez vos pages. Exportez en PDF, PNG, JPEG ou texte.":
+    "Merge, duplicate, rotate and split pages. Export PDF, PNG, JPEG or text.",
+  "Reconnaissance de texte": "Text recognition",
+  "OCR local français et anglais sur la page courante, avec correction des lignes reconnues.":
+    "Local French and English OCR on the current page, with correction of recognized lines.",
+  "Formulaires et révision": "Forms and review",
+  "Créez et remplissez des formulaires. Ajoutez des commentaires, des liens et des pièces jointes.":
+    "Create and fill forms. Add comments, links and attachments.",
+  "Versions et comparaison": "Versions and comparison",
+  "Gardez des étapes nommées pendant la session, comparez les rendus et restaurez une version avec annulation possible.":
+    "Keep named steps during the session, compare rendered pages and restore versions with undo support.",
+  "Protection et confidentialité": "Protection and privacy",
+  "Traitez vos fichiers sur votre appareil. Protégez une copie par mot de passe AES-256 et compressez sans perte.":
+    "Process files on your device. Protect a copy with AES-256 password encryption and compress without loss.",
+  "Mesures, index de recherche local, traitements guidés, prépresse, contrôles d’accessibilité et export d’archivage PDF/A-2b.":
+    "Measurements, local search index, guided processing, prepress, accessibility checks and PDF/A-2b archival export.",
+  "La conversion bureautique nécessite LibreOffice installé. Les contrôles PDF/A utilisent veraPDF ; l’export d’archivage produit une copie avec pages en images. Les versions nommées restent en mémoire pendant la session.":
+    "Office conversion requires LibreOffice. PDF/A checks use veraPDF; archival export produces a copy with image-based pages. Named versions stay in memory during the session.",
+  "Créé par": "Created by",
+  Contact: "Contact",
+  "Tous droits réservés.": "All rights reserved.",
   "Atelier de versions": "Version workspace",
   Versions: "Versions",
-  "Cette page n’existait pas dans cette version.": "This page did not exist in this version.",
+  "Cette page n’existait pas dans cette version.":
+    "This page did not exist in this version.",
   Version: "Version",
   "Gardez vos étapes importantes, comparez le rendu PDF et revenez à une version en une action annulable.":
     "Keep important steps, compare the rendered PDF and restore a version with undo support.",

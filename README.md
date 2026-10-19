@@ -15,6 +15,7 @@ npm run dev
 
 ## Fonctionnalités
 
+- Logo HayPDF : document, initiale H et crayon, utilisé dans l’interface, le favicon et l’icône Windows. Cliquez sur la marque dans l’en-tête pour ouvrir « À propos » : version issue de `package.json`, résumé des fonctions, prérequis, contact et copyright de SandratraRaoelison.
 - Atelier de versions : enregistrer des étapes nommées, comparer la page courante avec le rendu PDF actuel (avant/après et différences en rouge), puis restaurer une étape avec annulation possible. Versions locales en mémoire, limitées à la session du document et effacées à l’ouverture d’un autre document ou à la fermeture de l’application.
 - Interface contextuelle : propriétés selon la sélection, organisation dans l’onglet Pages, catalogue avec recherche sans accents, thèmes clair/sombre et navigation au clavier.
 - Ouverture par sélection de fichier ou glisser-déposer, rendu PDF.js et miniatures.

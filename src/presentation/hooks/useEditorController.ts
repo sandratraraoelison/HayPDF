@@ -41,6 +41,7 @@ export function useEditorController() {
   }>();
   const fontInput = useRef<HTMLInputElement>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
 
   const [replacement, setReplacement] = useState("");
   const [ocrProgress, setOcrProgress] = useState<number>();
@@ -505,6 +506,8 @@ export function useEditorController() {
     nativeBlock,
     setNativeBlock,
     showShortcuts,
+    showAbout,
+    setShowAbout,
     setShowShortcuts,
     canvasScroll,
     replacement,

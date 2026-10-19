@@ -105,15 +105,6 @@ export const translations: Record<string, string> = {
     "Select a grid with selectable text, check the cells, then add or delete rows and columns. Local reconstruction in the original area with undo. Uniform style, no formulas, merged cells or scanned tables. Maximum: 100 rows and 20 columns, subject to available space and Helvetica character support.",
   Fichier: "File",
   "Nouveau document": "New document",
-  "Menu Fichier": "File menu",
-  "Le bouton en haut à gauche permet de créer un document, ouvrir un PDF local, exporter le PDF courant et consulter les raccourcis. Le nouveau document utilise les options de création existantes ; aucun format de projet séparé n’est enregistré.":
-    "The top-left button creates a document, opens a local PDF, exports the current PDF and shows shortcuts. New documents use the existing creation options; no separate project format is saved.",
-  "Options de l’élément cliqué": "Options for the clicked element",
-  "En mode Sélection, cliquez sur un texte ou une image intégrés, ou sur un élément ajouté, pour afficher ses options dans Propriétés. Un clic sur le fond vide efface la sélection. Les dessins vectoriels d’origine et le texte des pages scannées ne sont pas sélectionnables individuellement.":
-    "In Select mode, click embedded text or an image, or an added element, to show its options in Properties. Clicking empty background clears the selection. Original vector artwork and text within scanned pages cannot be selected individually.",
-  "Pointeur de précision": "Precision pointer",
-  "Un pointeur en croix à double contraste indique précisément la position sur la page, y compris pendant le tracé libre. Les éléments déplaçables et les poignées conservent leurs curseurs dédiés.":
-    "A dual-contrast crosshair shows the precise position on the page, including during freehand drawing. Movable elements and handles retain their dedicated cursors.",
   "Tracé libre": "Freehand drawing",
   "Tracez sur la page. Échap annule le trait en cours.":
     "Draw on the page. Escape cancels the current stroke.",
@@ -135,9 +126,6 @@ export const translations: Record<string, string> = {
   "Formes géométriques": "Geometric shapes",
   "Ajoutez 11 formes en contour : rectangles, ellipse, triangle, losange, polygones, étoile, ligne et flèches. Modifiez leur couleur et leurs dimensions, déplacez-les et exportez-les dans le PDF. Sans remplissage ni rotation individuelle.":
     "Add 11 outlined shapes: rectangles, ellipse, triangle, diamond, polygons, star, line and arrows. Change their color and dimensions, move them and export them to PDF. No fill or individual rotation.",
-  "Catalogue des outils": "Tools catalog",
-  "Recherchez un outil avec un champ fixe au-dessus de la liste défilante. Les outils nécessitant un document restent désactivés tant qu’aucun PDF n’est ouvert.":
-    "Find a tool using a fixed search field above the scrolling list. Tools requiring a document remain disabled until a PDF is opened.",
   "Images intégrées au PDF": "Images embedded in the PDF",
   "Sélectionnez une image dans la liste ou sur la page. Sur un PDF scanné, l’image peut couvrir toute la page. Les images superposées ne peuvent pas être supprimées isolément.":
     "Select an image from the list or on the page. In a scanned PDF, the image may cover the entire page. Overlapping images cannot be deleted individually.",
@@ -155,9 +143,6 @@ export const translations: Record<string, string> = {
   "Supprimer les images intégrées": "Delete embedded images",
   "Détectez et supprimez les images matricielles de la page, avec annulation. Les images superposées sont exclues. Une page scannée peut constituer une seule image ; les dessins vectoriels ne sont pas concernés.":
     "Detect and delete raster images on the page, with undo. Overlapping images are excluded. A scanned page may be a single image; vector artwork is not included.",
-  "Démarrage Electron": "Electron startup",
-  "Un écran avec logo et indicateur animé, sans texte, accompagne le démarrage jusqu’au premier affichage de l’éditeur. Disponible uniquement dans l’application de bureau Electron.":
-    "A screen with a logo and animated indicator, without text, accompanies startup until the editor first appears. Available only in the Electron desktop application.",
   "Convertir et exporter": "Convert and export",
   "Convertir un PDF": "Convert a PDF",
   Convertir: "Convert",

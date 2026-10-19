@@ -1,0 +1,15 @@
+node_modules/
+dist/
+release/
+*.log
+tmp/
+public/ocr/
+public/fonts/
+vendor/validation/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+Thumbs.db

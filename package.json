@@ -1,0 +1,73 @@
+{
+  "name": "haypdf",
+  "version": "1.0.0",
+  "description": "Éditeur PDF local avec Electron, React et TypeScript",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "predev": "node scripts/prepare-assets.cjs && node scripts/prepare-validation.cjs",
+    "predev:web": "node scripts/prepare-assets.cjs",
+    "prebuild": "node scripts/prepare-assets.cjs && node scripts/prepare-validation.cjs",
+    "prepare:validation": "node scripts/prepare-validation.cjs",
+    "dev": "concurrently -k \"vite\" \"wait-on http://127.0.0.1:5173 && node scripts/start-electron.cjs\"",
+    "dev:web": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && vite build",
+    "start": "electron .",
+    "test": "tsx --test tests/*.test.ts",
+    "smoke": "node scripts/start-electron.cjs scripts/smoke.cjs",
+    "format": "prettier --write src electron scripts tests vite.config.ts tsconfig.json package.json README.md index.html",
+    "pack": "npm run build && electron-builder --dir"
+  },
+  "keywords": [],
+  "type": "module",
+  "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "@tesseract.js-data/fra": "^1.0.0",
+    "diff": "^9.0.0",
+    "fflate": "^0.8.3",
+    "lucide-react": "^1.59.0",
+    "mupdf": "^1.28.1",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.4.299",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.6",
+    "electron": "^44.9.0",
+    "electron-builder": "^26.15.3",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.4",
+    "wait-on": "^9.5.1"
+  },
+  "private": true,
+  "build": {
+    "extraResources": [
+      {
+        "from": "vendor/validation",
+        "to": "validation",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "appId": "com.haypdf.editor",
+    "productName": "HayPDF",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ]
+  }
+}

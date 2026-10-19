@@ -164,64 +164,66 @@ export function ToolsCatalog({ onOrganize }: { onOrganize: () => void }) {
           )}
         </div>
       </div>
-      {!doc && (
-        <p className="catalog-hint">
-          {t("Ouvrez un PDF pour activer les outils d’édition.")}
-        </p>
-      )}
-      {documents.length > 0 && (
-        <section>
-          <h3>{t("Fichiers et export")}</h3>
-          {documents.map((option) => (
-            <Button
-              key={option.tool}
-              disabled={busy || (option.needsDocument && !doc)}
-              onClick={() => void openDocumentTool(option.tool)}
-            >
-              <option.icon size={18} aria-hidden="true" />
-              {t(option.label)}
-            </Button>
-          ))}
-        </section>
-      )}
-      {editing.length > 0 && (
-        <section>
-          <h3>{t("Modifier et organiser")}</h3>
-          {editing.map((option) => (
-            <Button
-              key={option.label}
-              disabled={busy || !doc}
-              onClick={option.action}
-            >
-              <option.icon size={18} aria-hidden="true" />
-              {t(option.label)}
-            </Button>
-          ))}
-        </section>
-      )}
-      {advanced.length > 0 && (
-        <section>
-          <h3>{t("Outils avancés")}</h3>
-          {advanced.map((feature) => {
-            const Icon = workbenchIcons[feature];
-            return (
+      <div className="catalog-items">
+        {!doc && (
+          <p className="catalog-hint">
+            {t("Ouvrez un PDF pour activer les outils d’édition.")}
+          </p>
+        )}
+        {documents.length > 0 && (
+          <section>
+            <h3>{t("Fichiers et export")}</h3>
+            {documents.map((option) => (
               <Button
-                key={feature}
-                disabled={
-                  busy || (!doc && !["search", "workflow"].includes(feature))
-                }
-                onClick={() => openFeature(feature)}
+                key={option.tool}
+                disabled={busy || (option.needsDocument && !doc)}
+                onClick={() => void openDocumentTool(option.tool)}
               >
-                <Icon size={18} aria-hidden="true" />
-                {t(workbenchLabels[feature])}
+                <option.icon size={18} aria-hidden="true" />
+                {t(option.label)}
               </Button>
-            );
-          })}
-        </section>
-      )}
-      <p className="catalog-results" role="status">
-        {count === 0 && t("Aucun outil trouvé. Essayez un autre mot.")}
-      </p>
+            ))}
+          </section>
+        )}
+        {editing.length > 0 && (
+          <section>
+            <h3>{t("Modifier et organiser")}</h3>
+            {editing.map((option) => (
+              <Button
+                key={option.label}
+                disabled={busy || !doc}
+                onClick={option.action}
+              >
+                <option.icon size={18} aria-hidden="true" />
+                {t(option.label)}
+              </Button>
+            ))}
+          </section>
+        )}
+        {advanced.length > 0 && (
+          <section>
+            <h3>{t("Outils avancés")}</h3>
+            {advanced.map((feature) => {
+              const Icon = workbenchIcons[feature];
+              return (
+                <Button
+                  key={feature}
+                  disabled={
+                    busy || (!doc && !["search", "workflow"].includes(feature))
+                  }
+                  onClick={() => openFeature(feature)}
+                >
+                  <Icon size={18} aria-hidden="true" />
+                  {t(workbenchLabels[feature])}
+                </Button>
+              );
+            })}
+          </section>
+        )}
+        <p className="catalog-results" role="status">
+          {count === 0 && t("Aucun outil trouvé. Essayez un autre mot.")}
+        </p>
+      </div>
     </aside>
   );
 }

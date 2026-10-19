@@ -5,9 +5,11 @@ const handles: ResizeHandle[] = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
 export function ImageResizeHandles({
   onStart,
   t,
+  label = "Redimensionner l’image",
 }: {
   onStart: (handle: ResizeHandle) => PointerEventHandler<HTMLButtonElement>;
   t: (text: string) => string;
+  label?: string;
 }) {
   return (
     <>
@@ -16,8 +18,8 @@ export function ImageResizeHandles({
           key={handle}
           className={`image-resize-handle handle-${handle}`}
           tabIndex={-1}
-          title={t("Redimensionner l’image")}
-          aria-label={`${t("Redimensionner l’image")} (${handle})`}
+          title={t(label)}
+          aria-label={`${t(label)} (${handle})`}
           onPointerDown={onStart(handle)}
           onClick={(event) => event.stopPropagation()}
         />

@@ -109,7 +109,18 @@ app.whenReady().then(() => {
     }
   });
   const createWindow = () => {
+    const splash = new BrowserWindow({
+      width: 420,
+      height: 300,
+      frame: false,
+      resizable: false,
+      backgroundColor: "#19171f",
+      icon: path.join(__dirname, "icon.png"),
+      webPreferences: { sandbox: true, contextIsolation: true, nodeIntegration: false },
+    });
+    void splash.loadFile(path.join(__dirname, "loading.html"));
     window = new BrowserWindow({
+      show: false,
       width: 1440,
       height: 960,
       minWidth: 1000,
@@ -123,6 +134,23 @@ app.whenReady().then(() => {
         sandbox: true,
         nodeIntegration: false,
       },
+    });
+    const editor = window;
+    const closeSplash = () => {
+      if (!splash.isDestroyed()) splash.destroy();
+    };
+    editor.once("ready-to-show", () => {
+      if (!editor.isDestroyed()) editor.show();
+      closeSplash();
+    });
+    editor.once("closed", closeSplash);
+    splash.on("closed", () => {
+      if (!editor.isDestroyed() && !editor.isVisible()) editor.close();
+    });
+    editor.webContents.on("did-fail-load", (_event, code, description, _url, isMainFrame) => {
+      if (!isMainFrame || code === -3) return;
+      editor.close();
+      dialog.showErrorBox("HayPDF", description);
     });
     window.webContents.setWindowOpenHandler(({ url }) => {
       if (url === contactUrl) void shell.openExternal(url).catch(console.error);

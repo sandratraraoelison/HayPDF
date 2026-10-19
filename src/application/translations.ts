@@ -2,6 +2,130 @@
 import { workbenchTranslations } from "./workbenchTranslations";
 export const translations: Record<string, string> = {
   ...workbenchTranslations,
+  "Un histogramme nécessite une hauteur d’au moins 120 points.": "A bar chart needs a height of at least 120 points.",
+  Graphique: "Chart",
+  "Modifier le graphique": "Edit chart",
+  "Type de graphique": "Chart type",
+  Histogramme: "Bar chart",
+  Camembert: "Pie chart",
+  "Diagramme de processus": "Process diagram",
+  "Titre du graphique": "Chart title",
+  Libellé: "Label",
+  Valeur: "Value",
+  Élément: "Item",
+  "Sous-titre": "Subtitle",
+  Aperçu: "Preview",
+  "Aperçu du graphique": "Chart preview",
+  "Ajouter un élément": "Add item",
+  "Textes de la zone d’origine": "Text from the original area",
+  "Aucun texte sélectionnable détecté.": "No selectable text detected.",
+  "Appliquer le graphique": "Apply chart",
+  "Ajoutez les éléments du graphique pour afficher l’aperçu.":
+    "Add chart items to display the preview.",
+  "Encadrez le graphique entier, titre et légende compris. Échap pour annuler.":
+    "Draw a box around the complete chart, including its title and legend. Escape to cancel.",
+  "Reconstituez le graphique dans la zone sélectionnée. Les données d’origine ne sont pas récupérées automatiquement : reprenez les libellés et les valeurs, puis vérifiez l’aperçu. Le style est remplacé ; le reste de la page est conservé. Maximum : 12 éléments, sans formules ni liens Excel.":
+    "Rebuild the chart in the selected area. Original data is not recovered automatically: enter the labels and values, then check the preview. The style is replaced; the rest of the page is retained. Maximum: 12 items, without formulas or Excel links.",
+  "Graphique invalide : 1 à 12 éléments, valeurs positives ou nulles et zone d’au moins 180 × 80 points.":
+    "Invalid chart: 1 to 12 items, nonnegative values and an area of at least 180 × 80 points.",
+  "Sélectionnez une zone d’au moins 180 × 80 points pour le graphique.":
+    "Select an area of at least 180 × 80 points for the chart.",
+  "Le total du camembert doit être supérieur à zéro.":
+    "The pie chart total must be greater than zero.",
+  "La zone est trop petite pour ces étapes. Réduisez le nombre d’éléments.":
+    "The area is too small for these items. Reduce the item count.",
+  "Certains caractères ne sont pas pris en charge par la police du graphique.":
+    "Some characters are not supported by the chart font.",
+  "Un libellé est trop long. Réduisez le texte ou le nombre d’éléments.":
+    "A label is too long. Shorten the text or reduce the item count.",
+  "Reconstituer un graphique": "Rebuild a chart",
+  "Remplacez une zone par un histogramme, un camembert ou un diagramme de processus vectoriel. Saisissez les données, les couleurs et les libellés, vérifiez l’aperçu, puis appliquez avec annulation possible. Les données d’origine ne sont pas récupérées automatiquement. Maximum : 12 éléments dans une zone d’au moins 180 × 80 points ; style uniforme, sans formules ni liens Excel, caractères pris en charge par Helvetica uniquement.":
+    "Replace an area with a vector bar chart, pie chart or process diagram. Enter data, colors and labels, check the preview, then apply with undo available. Original data is not recovered automatically. Maximum: 12 items in an area of at least 180 × 80 points; uniform style, no formulas or Excel links, Helvetica-supported characters only.",
+  Tableau: "Table",
+  "Modifier le tableau": "Edit table",
+  Lignes: "Rows",
+  Colonne: "Column",
+  "Ajouter une ligne": "Add row",
+  "Ajouter une colonne": "Add column",
+  "Insérer une colonne avant": "Insert column before",
+  "Insérer une ligne avant": "Insert row before",
+  "Supprimer la colonne": "Delete column",
+  "Supprimer la ligne": "Delete row",
+  "Appliquer le tableau": "Apply table",
+  "Encadrez un seul tableau, bordures comprises. Échap pour annuler.":
+    "Draw a box around one table, including its borders. Escape to cancel.",
+  "Vérifiez les cellules détectées avant d’appliquer. Le tableau est reconstruit dans sa zone d’origine avec un style uniforme ; les formules ne sont pas recalculées. Grilles sans cellules fusionnées, texte sélectionnable uniquement. Maximum : 100 lignes et 20 colonnes.":
+    "Check detected cells before applying. The table is rebuilt in its original area with a uniform style; formulas are not recalculated. Grids without merged cells and selectable text only. Maximum: 100 rows and 20 columns.",
+  "Sélectionnez un seul tableau avec une grille régulière et du texte sélectionnable.":
+    "Select one table with a regular grid and selectable text.",
+  "Les cellules fusionnées et les grilles incomplètes ne sont pas prises en charge.":
+    "Merged cells and incomplete grids are not supported.",
+  "Ce tableau ne contient pas de texte sélectionnable. Les tableaux scannés nécessitent une transcription manuelle hors de cet outil.":
+    "This table has no selectable text. Scanned tables require manual transcription outside this tool.",
+  "Le tableau est trop dense : au moins 14 points par ligne et 24 points par colonne sont nécessaires.":
+    "The table is too dense: each row needs at least 14 points and each column 24 points.",
+  "Certains caractères ne sont pas pris en charge par la police du tableau.":
+    "Some characters are not supported by the table font.",
+  "Le contenu dépasse une cellule. Réduisez le texte ou le nombre de lignes et colonnes.":
+    "Content exceeds a cell. Reduce the text or the number of rows and columns.",
+  "Modifier les tableaux simples": "Edit simple tables",
+  "Encadrez une grille à texte sélectionnable, vérifiez les cellules, puis ajoutez ou supprimez des lignes et colonnes. Reconstruction locale dans la zone d’origine avec annulation. Style uniforme, sans formules, cellules fusionnées ni tableaux scannés. Maximum : 100 lignes et 20 colonnes, sous réserve d’espace et de caractères pris en charge par Helvetica.":
+    "Select a grid with selectable text, check the cells, then add or delete rows and columns. Local reconstruction in the original area with undo. Uniform style, no formulas, merged cells or scanned tables. Maximum: 100 rows and 20 columns, subject to available space and Helvetica character support.",
+  Fichier: "File",
+  "Nouveau document": "New document",
+  "Menu Fichier": "File menu",
+  "Le bouton en haut à gauche permet de créer un document, ouvrir un PDF local, exporter le PDF courant et consulter les raccourcis. Le nouveau document utilise les options de création existantes ; aucun format de projet séparé n’est enregistré.":
+    "The top-left button creates a document, opens a local PDF, exports the current PDF and shows shortcuts. New documents use the existing creation options; no separate project format is saved.",
+  "Options de l’élément cliqué": "Options for the clicked element",
+  "En mode Sélection, cliquez sur un texte ou une image intégrés, ou sur un élément ajouté, pour afficher ses options dans Propriétés. Un clic sur le fond vide efface la sélection. Les dessins vectoriels d’origine et le texte des pages scannées ne sont pas sélectionnables individuellement.":
+    "In Select mode, click embedded text or an image, or an added element, to show its options in Properties. Clicking empty background clears the selection. Original vector artwork and text within scanned pages cannot be selected individually.",
+  "Pointeur de précision": "Precision pointer",
+  "Un pointeur en croix à double contraste indique précisément la position sur la page, y compris pendant le tracé libre. Les éléments déplaçables et les poignées conservent leurs curseurs dédiés.":
+    "A dual-contrast crosshair shows the precise position on the page, including during freehand drawing. Movable elements and handles retain their dedicated cursors.",
+  "Tracé libre": "Freehand drawing",
+  "Tracez sur la page. Échap annule le trait en cours.":
+    "Draw on the page. Escape cancels the current stroke.",
+  "Choisissez une forme dans le menu du bouton Forme : 11 formes prédéfinies et un tracé libre à la souris ou au stylet. Couleur, dimensions, déplacement, annulation et export PDF. Échap annule le trait en cours. Traits sans remplissage ni rotation individuelle ; pression du stylet non prise en compte.":
+    "Choose a shape from the Shape button menu: 11 presets and freehand drawing with a mouse or stylus. Color, dimensions, movement, undo and PDF export. Escape cancels the current stroke. Outlines without fill or individual rotation; pen pressure is not used.",
+  "Redimensionner la forme": "Resize shape",
+  "Choisir une forme": "Choose a shape",
+  Rectangle: "Rectangle",
+  "Rectangle arrondi": "Rounded rectangle",
+  Ellipse: "Ellipse",
+  Triangle: "Triangle",
+  Losange: "Diamond",
+  Pentagone: "Pentagon",
+  Hexagone: "Hexagon",
+  Étoile: "Star",
+  Ligne: "Line",
+  Flèche: "Arrow",
+  "Double flèche": "Double arrow",
+  "Formes géométriques": "Geometric shapes",
+  "Ajoutez 11 formes en contour : rectangles, ellipse, triangle, losange, polygones, étoile, ligne et flèches. Modifiez leur couleur et leurs dimensions, déplacez-les et exportez-les dans le PDF. Sans remplissage ni rotation individuelle.":
+    "Add 11 outlined shapes: rectangles, ellipse, triangle, diamond, polygons, star, line and arrows. Change their color and dimensions, move them and export them to PDF. No fill or individual rotation.",
+  "Catalogue des outils": "Tools catalog",
+  "Recherchez un outil avec un champ fixe au-dessus de la liste défilante. Les outils nécessitant un document restent désactivés tant qu’aucun PDF n’est ouvert.":
+    "Find a tool using a fixed search field above the scrolling list. Tools requiring a document remain disabled until a PDF is opened.",
+  "Images intégrées au PDF": "Images embedded in the PDF",
+  "Sélectionnez une image dans la liste ou sur la page. Sur un PDF scanné, l’image peut couvrir toute la page. Les images superposées ne peuvent pas être supprimées isolément.":
+    "Select an image from the list or on the page. In a scanned PDF, the image may cover the entire page. Overlapping images cannot be deleted individually.",
+  "Détection des images…": "Detecting images…",
+  "Impossible de détecter les images de cette page.":
+    "Could not detect images on this page.",
+  "Aucune image intégrée détectée sur cette page.":
+    "No embedded images detected on this page.",
+  Image: "Image",
+  "Supprimer l’image intégrée": "Delete embedded image",
+  "Image intégrée supprimée. Vous pouvez annuler cette action.":
+    "Embedded image deleted. You can undo this action.",
+  "Cette image chevauche une autre image. La suppression isolée n’est pas disponible.":
+    "This image overlaps another image. Individual deletion is unavailable.",
+  "Supprimer les images intégrées": "Delete embedded images",
+  "Détectez et supprimez les images matricielles de la page, avec annulation. Les images superposées sont exclues. Une page scannée peut constituer une seule image ; les dessins vectoriels ne sont pas concernés.":
+    "Detect and delete raster images on the page, with undo. Overlapping images are excluded. A scanned page may be a single image; vector artwork is not included.",
+  "Démarrage Electron": "Electron startup",
+  "Un écran avec logo et indicateur animé, sans texte, accompagne le démarrage jusqu’au premier affichage de l’éditeur. Disponible uniquement dans l’application de bureau Electron.":
+    "A screen with a logo and animated indicator, without text, accompanies startup until the editor first appears. Available only in the Electron desktop application.",
   "Convertir et exporter": "Convert and export",
   "Convertir un PDF": "Convert a PDF",
   Convertir: "Convert",

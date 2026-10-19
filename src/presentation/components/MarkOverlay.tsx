@@ -2,6 +2,7 @@ import type { Mark } from "../../domain/document";
 import type { Bounds, Rect } from "../../domain/imageLayout";
 import { useMarkTransform } from "../hooks/useMarkTransform";
 import { ImageResizeHandles } from "./ImageResizeHandles";
+import { shapePath } from "../../domain/shapes";
 interface MarkOverlayProps {
   mark: Mark;
   scale: number;
@@ -76,7 +77,35 @@ export function MarkOverlay({
             />
           )}
         </>
-      ) : mark.kind === "rectangle" || mark.kind === "highlight" ? (
+      ) : mark.kind === "rectangle" ? (
+        <>
+          <svg
+            className="shape-preview"
+            viewBox={`0 0 ${transform.rect.width} ${transform.rect.height}`}
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path
+              d={shapePath(
+                mark.shape ?? "rectangle",
+                transform.rect.width,
+                transform.rect.height,
+                mark.points,
+              )}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
+          </svg>
+          {selected && onResize && (
+            <ImageResizeHandles
+              onStart={(handle) => (event) => transform.start(event, handle)}
+              t={t}
+              label="Redimensionner la forme"
+            />
+          )}
+        </>
+      ) : mark.kind === "highlight" ? (
         ""
       ) : (
         mark.text

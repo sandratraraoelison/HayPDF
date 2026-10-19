@@ -1,7 +1,15 @@
 import { Button } from "../ui/Button";
 import { useEditor } from "../EditorContext";
-import { ScanText, Redo2, ShieldCheck, Undo2 } from "lucide-react";
+import {
+  ScanText,
+  Redo2,
+  ShieldCheck,
+  Undo2,
+  Table2,
+  ChartColumn,
+} from "lucide-react";
 import { tools } from "../tools";
+import { ShapeToolButton } from "./ShapeToolButton";
 export function EditorToolbar() {
   const {
     chooseTool,
@@ -15,6 +23,8 @@ export function EditorToolbar() {
     tool,
     busy,
     ocr,
+    tableEditor,
+    graphEditor,
   } = useEditor();
   return (
     <nav className="toolbar">
@@ -31,19 +41,47 @@ export function EditorToolbar() {
         </Button>
       </div>
       <div className="tools" inert={busy}>
-        {tools.map((option) => (
-          <Button
-            key={option.id}
-            className={tool === option.id ? "active" : ""}
-            aria-pressed={tool === option.id}
-            disabled={!doc || busy}
-            onClick={() => chooseTool(option.id)}
-          >
-            <option.icon size={19} />
-            {t(option.label)}
-          </Button>
-        ))}
+        {tools.map((option) =>
+          option.id === "rectangle" ? (
+            <ShapeToolButton key={option.id} />
+          ) : (
+            <Button
+              key={option.id}
+              className={tool === option.id ? "active" : ""}
+              aria-pressed={tool === option.id}
+              disabled={!doc || busy}
+              onClick={() => chooseTool(option.id)}
+            >
+              <option.icon size={19} />
+              {t(option.label)}
+            </Button>
+          ),
+        )}
       </div>
+      <Button
+        className="button table-tool"
+        disabled={!doc || busy}
+        aria-pressed={tableEditor.selecting}
+        onClick={() => {
+          chooseTool("select");
+          tableEditor.start();
+        }}
+      >
+        <Table2 size={18} />
+        {t("Tableau")}
+      </Button>
+      <Button
+        className="button graph-tool"
+        disabled={!doc || busy}
+        aria-pressed={graphEditor.selecting}
+        onClick={() => {
+          chooseTool("select");
+          graphEditor.start();
+        }}
+      >
+        <ChartColumn size={18} />
+        {t("Graphique")}
+      </Button>
       <Button
         className="button ocr-button"
         disabled={!doc || busy}

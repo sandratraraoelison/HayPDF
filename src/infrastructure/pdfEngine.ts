@@ -16,6 +16,7 @@ import { uid } from "../domain/document";
 import { imageContentRect } from "../domain/imageLayout";
 import { restoreFormRoot } from "./pdfForms";
 import { preserveCatalog } from "./pdfCatalog";
+import { shapePath } from "../domain/shapes";
 export async function readDocument(
   bytes: Uint8Array,
   name: string,
@@ -157,15 +158,32 @@ export async function exportDocument(
           height: content.height,
         });
         page.pushOperators(popGraphicsState());
-      } else if (mark.kind === "highlight" || mark.kind === "rectangle") {
+      } else if (mark.kind === "rectangle") {
+        const [topX, topY] = convert(mark.x, mark.y);
+        page.drawSvgPath(
+          shapePath(
+            mark.shape ?? "rectangle",
+            mark.width,
+            mark.height,
+            mark.points,
+          ),
+          {
+            x: topX,
+            y: topY,
+            rotate: degrees(model.rotation),
+            borderColor: color,
+            borderWidth: 1.5,
+          },
+        );
+      } else if (mark.kind === "highlight") {
         page.drawRectangle({
           ...common,
           width: mark.width,
           height: mark.height,
-          color: mark.kind === "highlight" ? color : undefined,
+          color,
           opacity: 0.3,
           borderColor: color,
-          borderWidth: mark.kind === "rectangle" ? 1.5 : 0,
+          borderWidth: 0,
         });
       } else {
         const familyIndex = ["Helvetica", "TimesRoman", "Courier"].indexOf(

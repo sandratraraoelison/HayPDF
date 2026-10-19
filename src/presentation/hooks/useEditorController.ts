@@ -26,12 +26,22 @@ import { usePdfOpening } from "./usePdfOpening";
 import { useDocumentTools } from "./useDocumentTools";
 import type { DocumentModel } from "../../domain/document";
 import { useDocumentVersions } from "./useDocumentVersions";
+import { useNativeImages } from "./useNativeImages";
+import { useTableEditor } from "./useTableEditor";
+import { useGraphEditor } from "./useGraphEditor";
+import type { NativeImage } from "../../domain/nativeImage";
+import {
+  normalizeStroke,
+  type ShapeKind,
+  type StrokePoint,
+} from "../../domain/shapes";
 export function useEditorController() {
   const { scale, setScale, canvasScroll, zoom, fit, wheelZoom } =
     useEditorZoom();
   const { language, setLanguage, theme, setTheme, t } = usePreferences();
 
   const [nativeBlock, setNativeBlock] = useState<NativeText>();
+  const [shape, setShape] = useState<ShapeKind>("rectangle");
   const [operationError, setOperationError] = useState<OperationError>();
   const [noticeTone, setNoticeTone] = useState<"info" | "success">("info");
   const [replacementFont, setReplacementFont] = useState<{
@@ -162,8 +172,11 @@ export function useEditorController() {
     }
   }
   function place(x: number, y: number) {
+    if (tool === "rectangle" && shape === "freehand") return;
     if (!doc || !page || tool === "select" || tool === "native") {
       setSelected(undefined);
+      setNativeBlock(undefined);
+      nativeImages.selectImage(undefined);
       return;
     }
     if (tool === "image" && !image) {
@@ -173,6 +186,7 @@ export function useEditorController() {
     const next: Mark = {
       id: uid(),
       kind: tool,
+      shape: tool === "rectangle" ? shape : undefined,
       x,
       y,
       width: tool === "image" ? 160 : 220,
@@ -353,6 +367,7 @@ export function useEditorController() {
     undo,
     redo,
     escape: () => {
+      nativeImages.selectImage(undefined);
       setSelected(undefined);
       setNativeBlock(undefined);
       setNotice("");
@@ -370,9 +385,48 @@ export function useEditorController() {
   });
 
   function chooseTool(next: Tool) {
+    if (tableEditor.selecting) tableEditor.cancel();
+    if (graphEditor.selecting) graphEditor.cancel();
     clearActionInfo();
+    nativeImages.selectImage(undefined);
+    if (next === "rectangle") setSelected(undefined);
     setTool(next);
     if (next === "image") imageInput.current?.click();
+  }
+  function chooseShape(value: ShapeKind, editSelected = false) {
+    if (tableEditor.selecting) tableEditor.cancel();
+    if (graphEditor.selecting) graphEditor.cancel();
+    nativeImages.selectImage(undefined);
+    setShape(value);
+    if (editSelected && value !== "freehand" && mark?.kind === "rectangle") {
+      updateMark({ shape: value, points: undefined });
+    } else {
+      setSelected(undefined);
+      setTool("rectangle");
+    }
+  }
+  function drawFreehand(points: StrokePoint[]) {
+    if (!doc || !page || busy) return;
+    const stroke = normalizeStroke(points);
+    if (!stroke) return;
+    const next: Mark = {
+      id: uid(),
+      kind: "rectangle",
+      shape: "freehand",
+      ...stroke,
+      text: "",
+      font,
+      size,
+      color,
+    };
+    commit({
+      ...doc,
+      pages: doc.pages.map((p) =>
+        p.id === page.id ? { ...p, marks: [...p.marks, next] } : p,
+      ),
+    });
+    setSelected(next.id);
+    clearActionInfo();
   }
   function selectPage(index: number) {
     clearActionInfo();
@@ -381,17 +435,27 @@ export function useEditorController() {
   }
   function selectMark(id: string) {
     clearActionInfo();
+    setNativeBlock(undefined);
+    nativeImages.selectImage(undefined);
     setSelected(id);
     setTool("select");
   }
   function selectNativeBlock(block: NativeText) {
     clearActionInfo();
+    nativeImages.selectImage(undefined);
     setNativeBlock(block);
     setReplacement(block.text);
     setSize(block.size);
     setFont(block.font ?? "Helvetica");
     setColor(block.color ?? "#000000");
     setSelected(undefined);
+  }
+  function selectNativeImage(image?: NativeImage) {
+    clearActionInfo();
+    setSelected(undefined);
+    setNativeBlock(undefined);
+    nativeImages.selectImage(image);
+    if (image) nativeImages.setEnabled(true);
   }
   function moveMark(id: string, x: number, y: number) {
     if (doc && page) {
@@ -482,7 +546,24 @@ export function useEditorController() {
       setTool("select");
     },
   });
+  const nativeImages = useNativeImages({
+    doc,
+    pageIndex,
+    commit,
+    run,
+    t,
+    setNotice,
+  });
+  const tableEditor = useTableEditor(doc, pageIndex, commit, run, t);
+  const graphEditor = useGraphEditor(doc, pageIndex, commit, run);
   return {
+    graphEditor,
+    tableEditor,
+    nativeImages: { ...nativeImages, selectImage: selectNativeImage },
+    shape,
+    setShape,
+    chooseShape,
+    drawFreehand,
     ...versionTools,
     runTask: run,
     queryTask: (action: () => Promise<void>) => run(action, true),

@@ -3,6 +3,7 @@ import { Button } from "../ui/Button";
 import { useEditor } from "../EditorContext";
 import { Trash2 } from "lucide-react";
 import type { Mark } from "../../domain/document";
+import { ShapePicker } from "./ShapePicker";
 export function TextProperties({
   showContent = true,
 }: {
@@ -22,14 +23,27 @@ export function TextProperties({
     updateMark,
     deleteSelected,
     tool,
+    shape,
+    chooseShape,
   } = useEditor();
   const kind = mark?.kind ?? tool;
   const isText = !["rectangle", "highlight"].includes(kind);
   return (
     <section>
       <div className="section-label">
-        {mark ? t("ÉLÉMENT SÉLECTIONNÉ") : t(isText ? "STYLE DU TEXTE" : "STYLE DE LA FORME")}
+        {mark
+          ? t("ÉLÉMENT SÉLECTIONNÉ")
+          : t(isText ? "STYLE DU TEXTE" : "STYLE DE LA FORME")}
       </div>
+      {kind === "rectangle" && (
+        <ShapePicker
+          value={mark ? (mark.shape ?? "rectangle") : shape}
+          t={t}
+          onChange={(value) => {
+            chooseShape(value, true);
+          }}
+        />
+      )}
       {isText && (
         <label>
           {t("Police")}

@@ -90,7 +90,7 @@ export function useMarkTransform({
           current.handle,
           dx,
           dy,
-          (mark.lockAspectRatio ?? true) !== event.shiftKey,
+          (mark.lockAspectRatio ?? mark.kind === "image") !== event.shiftKey,
           bounds,
         )
       : {

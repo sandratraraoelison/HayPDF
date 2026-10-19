@@ -6,10 +6,10 @@ import {
   FolderOpen,
   Moon,
   Sun,
-  Keyboard,
   History,
 } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
+import { DocumentMenu } from "./DocumentMenu";
 export function EditorHeader() {
   const {
     language,
@@ -17,7 +17,6 @@ export function EditorHeader() {
     theme,
     setTheme,
     t,
-    setShowShortcuts,
     doc,
     busy,
     input,
@@ -27,14 +26,7 @@ export function EditorHeader() {
   } = useEditor();
   return (
     <header>
-      <Button
-        className="button shortcut-button"
-        title={`${t("Raccourcis clavier")} (F1)`}
-        aria-label={t("Raccourcis clavier")}
-        onClick={() => setShowShortcuts(true)}
-      >
-        <Keyboard size={18} />
-      </Button>
+      <DocumentMenu />
       <Button
         className="brand"
         onClick={() => setShowAbout(true)}

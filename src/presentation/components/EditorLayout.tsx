@@ -14,6 +14,8 @@ import { useWorkbench } from "../WorkbenchContext";
 import { WorkbenchDialog } from "./WorkbenchDialog";
 import { VersionsDialog } from "./VersionsDialog";
 import { AboutDialog } from "./AboutDialog";
+import { TableEditorDialog } from "./TableEditorDialog";
+import { GraphEditorDialog } from "./GraphEditorDialog";
 export function EditorLayout() {
   const { feature } = useWorkbench();
   const {
@@ -26,6 +28,8 @@ export function EditorLayout() {
     lockedFile,
     showVersions,
     showAbout,
+    tableEditor,
+    graphEditor,
   } = useEditor();
   const dropHandlers = usePdfDrop();
   return (
@@ -43,6 +47,8 @@ export function EditorLayout() {
       {lockedFile && <UnlockPdfDialog />}
       {showVersions && <VersionsDialog />}
       {showAbout && <AboutDialog />}
+      {tableEditor.draft && <TableEditorDialog />}
+      {graphEditor.draft && <GraphEditorDialog />}
       {feature && <WorkbenchDialog key={feature} />}
       {showShortcuts && (
         <ShortcutHelp t={t} onClose={() => setShowShortcuts(false)} />

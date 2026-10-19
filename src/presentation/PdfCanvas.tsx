@@ -3,11 +3,22 @@ import { usePdfPage } from "./hooks/usePdfPage";
 import { MarkOverlay } from "./components/MarkOverlay";
 import { Button } from "./ui/Button";
 import type { Rect } from "../domain/imageLayout";
+import type { NativeImage } from "../domain/nativeImage";
+import type { StrokePoint } from "../domain/shapes";
+import { FreehandLayer } from "./components/FreehandLayer";
+import { AreaSelectionLayer } from "./components/AreaSelectionLayer";
 interface PdfCanvasProps {
   doc: DocumentModel;
   page: PageModel;
   scale: number;
   selected?: string;
+  onFreehand?: (points: StrokePoint[]) => void;
+  drawingColor?: string;
+  onAreaSelect?: (area: Rect) => void;
+  areaLabel?: string;
+  nativeImages?: NativeImage[];
+  selectedImage?: NativeImage;
+  onImageSelect?: (image: NativeImage) => void;
   onPlace?: (x: number, y: number) => void;
   onSelect?: (id: string) => void;
   onMove?: (id: string, x: number, y: number) => void;
@@ -20,6 +31,13 @@ export function PdfCanvas({
   page,
   scale,
   selected,
+  onFreehand,
+  drawingColor = "#393454",
+  onAreaSelect,
+  areaLabel,
+  nativeImages = [],
+  selectedImage,
+  onImageSelect,
   onPlace,
   onSelect,
   onMove,
@@ -46,12 +64,57 @@ export function PdfCanvas({
       }}
     >
       <canvas ref={canvas} style={size} />
+      {onAreaSelect && (
+        <AreaSelectionLayer
+          key={`${page.id}-${scale}`}
+          width={size.width / scale}
+          height={size.height / scale}
+          scale={scale}
+          onSelect={onAreaSelect}
+          label={
+            areaLabel ??
+            t(
+              "Encadrez un seul tableau, bordures comprises. Échap pour annuler.",
+            )
+          }
+        />
+      )}
+      {onFreehand && (
+        <FreehandLayer
+          key={`${page.id}-${scale}`}
+          width={size.width / scale}
+          height={size.height / scale}
+          scale={scale}
+          color={drawingColor}
+          onComplete={onFreehand}
+          label={t("Tracez sur la page. Échap annule le trait en cours.")}
+        />
+      )}
       {error && <div className="render-error">{t(error)}</div>}
+      {onImageSelect &&
+        nativeImages.map((image) => (
+          <Button
+            key={image.index}
+            className={`native-block contextual-block native-image-block${selectedImage === image ? " selected" : ""}`}
+            aria-label={`${t("Image")} ${image.index + 1}`}
+            aria-pressed={selectedImage === image}
+            style={{
+              left: image.x * scale,
+              top: image.y * scale,
+              width: image.width * scale,
+              height: image.height * scale,
+            }}
+            onClick={(event) => {
+              event.stopPropagation();
+              onImageSelect(image);
+            }}
+          />
+        ))}
       {onNativeSelect &&
         nativeBlocks.map((block, index) => (
           <Button
             key={index}
-            className="native-block"
+            className="native-block contextual-block"
             title={t("Modifier le texte existant")}
             style={{
               left: block.x * scale,

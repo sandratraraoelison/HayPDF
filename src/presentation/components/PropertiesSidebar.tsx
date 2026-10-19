@@ -4,23 +4,34 @@ import { NativeTextPanel } from "./NativeTextPanel";
 import { OcrResultsPanel } from "./OcrResultsPanel";
 import { TextProperties } from "./TextProperties";
 import { ImageProperties } from "./ImageProperties";
+import { NativeImagesPanel } from "./NativeImagesPanel";
+import { usePropertiesPanel } from "../hooks/usePropertiesPanel";
 
 export function PropertiesSidebar() {
-  const { t, doc, nativeBlock, page, mark, tool } = useEditor();
+  const { t, doc, nativeBlock, page, mark, tool, nativeImages } = useEditor();
+  const panel = usePropertiesPanel(
+    mark?.id,
+    nativeBlock,
+    nativeImages.selectedImage,
+    tool,
+    page?.id,
+  );
   const hasProperties =
     !!doc &&
     (!!mark ||
       !!nativeBlock ||
+      !!nativeImages.selectedImage ||
       ["text", "signature", "stamp", "rectangle", "highlight"].includes(tool));
   return (
-    <aside className="properties" aria-label={t("Propriétés")}>
+    <aside ref={panel} className="properties" aria-label={t("Propriétés")}>
       <div className="sidebar-title">
         {t("Propriétés")}
         {hasProperties && <span className="tiny-label">{t("ÉDITION")}</span>}
       </div>
+      {doc && nativeImages.selectedImage && <NativeImagesPanel />}
       {nativeBlock && <NativeTextPanel />}
       {hasProperties ? (
-        mark?.kind === "image" ? (
+        nativeImages.selectedImage ? null : mark?.kind === "image" ? (
           <ImageProperties />
         ) : (
           <TextProperties showContent={!nativeBlock} />
@@ -44,6 +55,7 @@ export function PropertiesSidebar() {
           </p>
         </div>
       )}
+      {doc && !nativeImages.selectedImage && <NativeImagesPanel />}
       {page?.marks.some((m) => m.invisible) && <OcrResultsPanel />}
     </aside>
   );

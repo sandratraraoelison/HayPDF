@@ -1,3 +1,4 @@
+import type { ShapeKind, StrokePoint } from "./shapes";
 export type Tool =
   | "select"
   | "native"
@@ -18,6 +19,8 @@ export interface Mark {
   size: number;
   color: string;
   data?: string;
+  shape?: ShapeKind;
+  points?: StrokePoint[];
   imageFit?: "contain" | "cover" | "fill";
   lockAspectRatio?: boolean;
   naturalWidth?: number;

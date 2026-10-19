@@ -20,6 +20,12 @@ export function DocumentWorkspace() {
     selectNativeBlock,
     moveMark,
     resizeMark,
+    nativeImages,
+    shape,
+    color,
+    drawFreehand,
+    tableEditor,
+    graphEditor,
   } = useEditor();
   return (
     <main>
@@ -32,11 +38,21 @@ export function DocumentWorkspace() {
               {pageIndex + 1}
             </span>
             <span>
-              {tool === "select"
-                ? t("Sélectionnez et déplacez vos éléments")
-                : tool === "native"
-                  ? t("Cliquez sur un bloc de texte du PDF.")
-                  : t("Cliquez sur la page pour ajouter un élément")}
+              {graphEditor.selecting
+                ? t(
+                    "Encadrez le graphique entier, titre et légende compris. Échap pour annuler.",
+                  )
+                : tableEditor.selecting
+                  ? t(
+                      "Encadrez un seul tableau, bordures comprises. Échap pour annuler.",
+                    )
+                  : tool === "rectangle" && shape === "freehand"
+                    ? t("Tracez sur la page. Échap annule le trait en cours.")
+                    : tool === "select"
+                      ? t("Sélectionnez et déplacez vos éléments")
+                      : tool === "native"
+                        ? t("Cliquez sur un bloc de texte du PDF.")
+                        : t("Cliquez sur la page pour ajouter un élément")}
             </span>
           </div>
           <div className="canvas-scroll" ref={canvasScroll}>
@@ -45,9 +61,44 @@ export function DocumentWorkspace() {
               page={page}
               scale={scale}
               selected={selected}
+              onAreaSelect={
+                !busy
+                  ? graphEditor.selecting
+                    ? graphEditor.select
+                    : tableEditor.selecting
+                      ? tableEditor.select
+                      : undefined
+                  : undefined
+              }
+              areaLabel={
+                graphEditor.selecting
+                  ? t(
+                      "Encadrez le graphique entier, titre et légende compris. Échap pour annuler.",
+                    )
+                  : undefined
+              }
+              onFreehand={
+                tool === "rectangle" &&
+                shape === "freehand" &&
+                !busy &&
+                !tableEditor.selecting &&
+                !graphEditor.selecting
+                  ? drawFreehand
+                  : undefined
+              }
+              drawingColor={color}
+              nativeImages={nativeImages.images}
+              selectedImage={nativeImages.selectedImage}
+              onImageSelect={
+                tool === "select" && !busy
+                  ? nativeImages.selectImage
+                  : undefined
+              }
               t={t}
               onNativeSelect={
-                tool === "native" && !busy ? selectNativeBlock : undefined
+                (tool === "native" || tool === "select") && !busy
+                  ? selectNativeBlock
+                  : undefined
               }
               onPlace={place}
               onSelect={selectMark}
@@ -60,6 +111,16 @@ export function DocumentWorkspace() {
         <WelcomeScreen />
       )}
       {notice && <EditorNotice />}
+      {tableEditor.error && !tableEditor.draft && (
+        <p className="table-error" role="alert">
+          {t(tableEditor.error)}
+        </p>
+      )}
+      {graphEditor.error && !graphEditor.draft && (
+        <p className="table-error" role="alert">
+          {t(graphEditor.error)}
+        </p>
+      )}
       <ViewControls />
     </main>
   );

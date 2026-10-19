@@ -603,6 +603,10 @@ app.whenReady().then(async () => {
     }
     await require("./document-tools-checks.cjs")(window, pngBytes);
     await require("./workbench-checks.cjs")(window, pngBytes);
+    await require("./native-images-checks.cjs")(window, pngBytes);
+    await require("./shapes-checks.cjs")(window);
+    await require("./tables-checks.cjs")(window);
+    await require("./graphs-checks.cjs")(window);
     console.log("Electron smoke OK", result);
     app.exit(0);
   } catch (error) {

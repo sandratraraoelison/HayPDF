@@ -28,7 +28,7 @@ export const appFeatures = [
     icon: "ClipboardList",
     title: "Modifier les tableaux simples",
     summary:
-      "Encadrez une grille à texte sélectionnable, vérifiez les cellules, puis ajoutez ou supprimez des lignes et colonnes. Reconstruction locale dans la zone d’origine avec annulation. Style uniforme, sans formules, cellules fusionnées ni tableaux scannés. Maximum : 100 lignes et 20 colonnes, sous réserve d’espace et de caractères pris en charge par Helvetica.",
+      "Encadrez une grille à texte sélectionnable, puis modifiez les cellules, lignes et colonnes. Largeurs adaptées au texte, retours entre les mots et coupure des mots seulement si indispensable. Le contenu situé sous le tableau sur la page est décalé, avec ajout de pages avant les pages suivantes et répétition de l’en-tête. Texte sélectionnable et annulation conservés. Maximum : 1 000 lignes et 20 colonnes, Helvetica 10 points, sans formules, cellules fusionnées ni tableaux scannés. Pas de déplacement des annotations ou formulaires ; blocs trop hauts ou traversant le bord inférieur exclus. Détection des obstacles visuels jusqu’à 2 048 pixels par côté.",
   },
   {
     icon: "FilePenLine",

@@ -159,7 +159,326 @@ test("partial grids and overflowing content are rejected without changing the so
     width: 306,
     height: 166,
   });
-  draft.cells[0][0] = "X".repeat(1000);
+  draft.cells[0][0] = "X".repeat(10000);
   await assert.rejects(replaceTable(doc, 0, draft), /dépasse/);
   assert.match(text(doc.sources[0]), /REMOVE_ME/);
 });
+
+test("an added column automatically grows rows and preserves all text and the source", async () => {
+  const doc = await fixture(),
+    snapshot = doc.sources[0].slice();
+  let draft = await detectTable(doc, 0, {
+    x: 37,
+    y: 117,
+    width: 306,
+    height: 166,
+  });
+  draft = changeTableColumn(draft, 3, true);
+  draft.cells[1][1] =
+    "Automatic sizing keeps this entire sentence inside its cell";
+  draft.cells[1][3] = "NEW_COLUMN";
+  const next = await replaceTable(doc, 0, draft);
+  const detected = await detectTable(next, 0, {
+    x: 37,
+    y: 117,
+    width: 362,
+    height: 282,
+  });
+  assert.equal(detected.widths.length, 4);
+  assert.ok(detected.area.height >= draft.area.height);
+  assert.ok(detected.widths[1] > draft.widths[1]);
+  assert.equal(
+    detected.cells[1][1].replace(/\s/g, ""),
+    draft.cells[1][1].replace(/\s/g, ""),
+  );
+  assert.match(text(next.sources[0]), /Outside stays/);
+  assert.deepEqual(doc.sources[0], snapshot);
+});
+
+test("automatic growth moves the following content instead of overwriting it", async () => {
+  const original = await fixture(),
+    pdf = await PDFDocument.load(original.sources[0]);
+  const page = pdf.getPage(0);
+  page.drawRectangle({
+    x: 35,
+    y: 10,
+    width: 365,
+    height: 108,
+    color: rgb(0.8, 0, 0),
+  });
+  page.drawRectangle({
+    x: 342,
+    y: 10,
+    width: 58,
+    height: 280,
+    color: rgb(0, 0, 0.8),
+  });
+  const doc = await readDocument(await pdf.save(), "blocked.pdf");
+  const draft = await detectTable(doc, 0, {
+    x: 37,
+    y: 117,
+    width: 306,
+    height: 166,
+  });
+  draft.cells[1][0] =
+    "A long sentence that must grow beyond the available height. ".repeat(5);
+  const snapshot = doc.sources[0].slice();
+  const moved = await replaceTable(doc, 0, draft);
+  assert.ok(moved.pages.length > doc.pages.length);
+  assert.match(text(moved.sources[0]), /Outside stays/);
+  assert.deepEqual(doc.sources[0], snapshot);
+});
+
+for (const rotation of [0, 90, 180, 270]) {
+  test(`automatic table widening preserves a nearby obstacle at rotation ${rotation}`, async () => {
+    const pdf = await PDFDocument.create(),
+      page = pdf.addPage([400, 400]);
+    // Place the obstacle in visual page coordinates for each rotation.
+    const x = rotation === 90 ? 142 : 0;
+    const y =
+      rotation === 0 ? 0 : rotation === 90 ? 0 : rotation === 180 ? 142 : 0;
+    page.drawRectangle({
+      x,
+      y,
+      width: rotation % 180 ? 258 : 400,
+      height: rotation % 180 ? 400 : 258,
+      color: rgb(0.9, 0.2, 0.2),
+    });
+    page.setRotation(degrees(rotation));
+    const doc = await readDocument(await pdf.save(), "widen.pdf");
+    const draft = {
+      area: { x: 40, y: 100, width: 100, height: 40 },
+      widths: [50, 50],
+      cells: [
+        ["Long column heading", "Value"],
+        ["Another long heading", "42"],
+      ],
+    };
+    const next = await replaceTable(doc, 0, draft);
+    const detected = await detectTable(next, 0, {
+      x: 37,
+      y: 97,
+      width: 362,
+      height: 44,
+    });
+    assert.ok(detected.area.width > 100);
+    assert.ok(detected.area.height <= 40.1);
+    assert.equal(detected.cells[0][0], "Long column heading");
+    assert.equal(next.pages[0].rotation, rotation);
+    const rendered = mupdf.Document.openDocument(
+        next.sources[0],
+        "application/pdf",
+      ),
+      renderedPage = rendered.loadPage(0);
+    const pixmap = renderedPage.toPixmap(
+      mupdf.Matrix.identity,
+      mupdf.ColorSpace.DeviceRGB,
+      false,
+      true,
+    );
+    try {
+      const offset = 200 * pixmap.getStride() + 200 * 3;
+      assert.ok(
+        pixmap.getPixels()[offset] > 200 &&
+          pixmap.getPixels()[offset + 1] < 100,
+      );
+    } finally {
+      pixmap.destroy();
+      renderedPage.destroy();
+      rendered.destroy();
+    }
+  });
+}
+
+test("column widths use available space and wrap between whole words", async () => {
+  const doc = await fixture();
+  const draft = {
+    area: { x: 40, y: 120, width: 300, height: 160 },
+    widths: [50, 110, 40, 40, 30, 30],
+    cells: [
+      ["ID", "Tache", "Responsable", "Statut", "Progression", "Colonne"],
+      ["TSK-001", "Selectionner du texte", "Mina", "En cours", "65 %", "Test"],
+    ],
+  };
+  const next = await replaceTable(doc, 0, draft);
+  const detected = await detectTable(next, 0, {
+    x: 37,
+    y: 117,
+    width: 362,
+    height: 282,
+  });
+  assert.equal(detected.cells[0][2], "Responsable");
+  assert.equal(detected.cells[0][4], "Progression");
+  assert.ok(
+    detected.cells[1][1]
+      .split("\n")
+      .every((line) =>
+        line
+          .split(" ")
+          .every((word) => ["Selectionner", "du", "texte"].includes(word)),
+      ),
+  );
+});
+
+test("adding many rows inserts continuation pages before the untouched following pages", async () => {
+  const original = await fixture(),
+    pdf = await PDFDocument.load(original.sources[0]);
+  pdf.getPage(0).drawText("FOLLOWING_CONTENT", { x: 40, y: 60, size: 12 });
+  pdf
+    .addPage([400, 400])
+    .drawText("NEXT_ORIGINAL_PAGE", { x: 40, y: 330, size: 12 });
+  const doc = await readDocument(await pdf.save(), "flow.pdf"),
+    snapshot = doc.sources[0].slice();
+  let draft = await detectTable(doc, 0, {
+    x: 37,
+    y: 117,
+    width: 306,
+    height: 166,
+  });
+  while (draft.cells.length < 140)
+    draft = changeTableRow(draft, draft.cells.length, true);
+  draft.cells[139][0] = "LAST_NEW_ROW";
+  const next = await replaceTable(doc, 0, draft);
+  assert.ok(next.pages.length > 2);
+  const result = mupdf.Document.openDocument(
+    next.sources[0],
+    "application/pdf",
+  );
+  const texts: string[] = [];
+  try {
+    for (let i = 0; i < result.countPages(); i++) {
+      const page = result.loadPage(i),
+        structured = page.toStructuredText();
+      try {
+        texts.push(structured.asText());
+      } finally {
+        structured.destroy();
+        page.destroy();
+      }
+    }
+  } finally {
+    result.destroy();
+  }
+  const combined = texts.join("\n");
+  assert.equal(combined.split("FOLLOWING_CONTENT").length, 2);
+  assert.ok(
+    combined.indexOf("FOLLOWING_CONTENT") > combined.indexOf("LAST_NEW_ROW"),
+  );
+  assert.match(texts.at(-1)!, /NEXT_ORIGINAL_PAGE/);
+  assert.deepEqual(doc.sources[0], snapshot);
+});
+
+test("adding one row keeps existing row heights and shifts subsequent text by that height", async () => {
+  const original = await fixture(),
+    pdf = await PDFDocument.load(original.sources[0]);
+  pdf.getPage(0).drawText("FOLLOW_ONE", { x: 40, y: 90, size: 12 });
+  const doc = await readDocument(await pdf.save(), "one-row.pdf");
+  const draft = await detectTable(doc, 0, {
+    x: 37,
+    y: 117,
+    width: 306,
+    height: 166,
+  });
+  const next = await replaceTable(doc, 0, changeTableRow(draft, 4, true));
+  function followingTop(bytes: Uint8Array) {
+    const pdf = mupdf.Document.openDocument(bytes, "application/pdf"),
+      page = pdf.loadPage(0),
+      structured = page.toStructuredText();
+    let line = "",
+      top = 0,
+      result = NaN;
+    try {
+      structured.walk({
+        beginLine(box) {
+          line = "";
+          top = box[1];
+        },
+        onChar(c) {
+          line += c;
+        },
+        endLine() {
+          if (line.includes("FOLLOW_ONE")) result = top;
+        },
+      });
+      return result;
+    } finally {
+      structured.destroy();
+      page.destroy();
+      pdf.destroy();
+    }
+  }
+  assert.equal(next.pages.length, 1);
+  assert.ok(
+    Math.abs(
+      followingTop(next.sources[0]) - followingTop(doc.sources[0]) - 40,
+    ) < 0.1,
+  );
+});
+
+for (const rotation of [0, 90, 180, 270]) {
+  test(`pagination preserves cropped and rotated following text at ${rotation} degrees`, async () => {
+    const pdf = await PDFDocument.create(),
+      page = pdf.addPage([500, 500]);
+    page.setCropBox(20, 30, 400, 400);
+    page.setRotation(degrees(rotation));
+    const position =
+      rotation === 0
+        ? [40, 100]
+        : rotation === 90
+          ? [300, 40]
+          : rotation === 180
+            ? [360, 300]
+            : [100, 360];
+    page.drawText("ROTATED_FOLLOWING", {
+      x: 20 + position[0],
+      y: 30 + position[1],
+      size: 10,
+      rotate: degrees(rotation),
+    });
+    const doc = await readDocument(await pdf.save(), "rotated-flow.pdf");
+    const draft = {
+      area: { x: 40, y: 80, width: 300, height: 80 },
+      widths: [150, 150],
+      cells: Array.from({ length: 40 }, (_, i) => [`ROW_${i}`, "VALUE"]),
+    };
+    const next = await replaceTable(doc, 0, draft);
+    assert.ok(next.pages.length > 1);
+    const result = mupdf.Document.openDocument(
+      next.sources[0],
+      "application/pdf",
+    );
+    let found = 0;
+    try {
+      for (let i = 0; i < result.countPages(); i++) {
+        const rendered = result.loadPage(i),
+          structured = rendered.toStructuredText();
+        try {
+          if (structured.asText().includes("ROTATED_FOLLOWING")) {
+            found++;
+            assert.ok(i > 0);
+            const bounds = rendered.getBounds();
+            structured.walk({
+              onChar(_c, _origin, _font, _size, quad) {
+                for (let p = 0; p < quad.length; p += 2) {
+                  assert.ok(
+                    quad[p] >= bounds[0] - 1 && quad[p] <= bounds[2] + 1,
+                  );
+                  assert.ok(
+                    quad[p + 1] >= bounds[1] - 1 &&
+                      quad[p + 1] <= bounds[3] + 1,
+                  );
+                }
+              },
+            });
+          }
+        } finally {
+          structured.destroy();
+          rendered.destroy();
+        }
+      }
+    } finally {
+      result.destroy();
+    }
+    assert.equal(found, 1);
+  });
+}

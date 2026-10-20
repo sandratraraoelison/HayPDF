@@ -4,6 +4,12 @@ import type { DocumentModel } from "../domain/document";
 import type { Rect } from "../domain/imageLayout";
 import type { TableDraft } from "../domain/table";
 import { exportDocument, readDocument } from "./pdfEngine";
+import { fitTableToPage } from "./tableLayout";
+import {
+  inspectTableTail,
+  tableTailSource,
+  tablePoint,
+} from "./tablePagination";
 
 export async function detectTable(
   doc: DocumentModel,
@@ -99,7 +105,7 @@ export async function detectTable(
       values.sort((a, b) => a - b).filter((v, i, a) => !i || v - a[i - 1] > 1);
     const xs = unique(vertical.map((l) => l.x)),
       ys = unique(horizontal.map((l) => l.y));
-    if (xs.length < 2 || ys.length < 2 || xs.length > 21 || ys.length > 101)
+    if (xs.length < 2 || ys.length < 2 || xs.length > 21 || ys.length > 1001)
       throw new Error(
         "Sélectionnez un seul tableau avec une grille régulière et du texte sélectionnable.",
       );
@@ -179,6 +185,7 @@ export async function detectTable(
         height: ys.at(-1)! - ys[0],
       },
       widths: xs.slice(1).map((x, i) => x - xs[i]),
+      rowHeights: ys.slice(1).map((y, i) => y - ys[i]),
       cells: cells.map((row) => row.map((v) => v.trim())),
     };
   } finally {
@@ -188,26 +195,29 @@ export async function detectTable(
   }
 }
 
-/** Rebuild within the original area so nearby page content never needs to move. */
+/** Rebuild with content-aware widths and flow subsequent page content downward. */
 export async function replaceTable(
   doc: DocumentModel,
   index: number,
   table: TableDraft,
 ): Promise<DocumentModel> {
-  const { area, widths, cells } = table;
+  const { area, cells } = table;
+  let widths = table.widths;
   if (
     !cells.length ||
-    cells.length > 100 ||
+    cells.length > 1000 ||
     !widths.length ||
     widths.length > 20 ||
     cells.some((r) => r.length !== widths.length) ||
+    (table.rowHeights !== undefined &&
+      (table.rowHeights.length !== cells.length ||
+        table.rowHeights.some((h) => !Number.isFinite(h) || h <= 0))) ||
     !Number.isFinite(area.x + area.y + area.width + area.height) ||
     area.x < 0 ||
     area.y < 0 ||
     area.width <= 0 ||
     area.height <= 0 ||
-    widths.some((w) => !Number.isFinite(w) || w < 24) ||
-    area.height / cells.length < 14 ||
+    widths.some((w) => !Number.isFinite(w) || w <= 0) ||
     Math.abs(widths.reduce((a, b) => a + b, 0) - area.width) > 0.1
   )
     throw new Error(
@@ -217,45 +227,13 @@ export async function replaceTable(
   // Validate encoding and text fit before altering any PDF content.
   const metrics = await PDFDocument.create(),
     font = await metrics.embedFont(StandardFonts.Helvetica);
-  const rowHeight = area.height / cells.length,
-    fontSize = Math.min(10, rowHeight - 6);
-  const wrapped = cells.map((row) =>
-    row.map((value, c) => {
-      const lines: string[] = [];
-      for (const paragraph of value.split(/\r?\n/)) {
-        let line = "";
-        for (const char of paragraph) {
-          let size: number;
-          try {
-            size = font.widthOfTextAtSize(line + char, fontSize);
-          } catch {
-            throw new Error(
-              "Certains caractères ne sont pas pris en charge par la police du tableau.",
-            );
-          }
-          if (size > widths[c] - 8) {
-            if (!line)
-              throw new Error(
-                "Le contenu dépasse une cellule. Réduisez le texte ou le nombre de lignes et colonnes.",
-              );
-            lines.push(line);
-            line = char;
-          } else line += char;
-        }
-        lines.push(line);
-      }
-      if (lines.length * fontSize * 1.2 > rowHeight - 4)
-        throw new Error(
-          "Le contenu dépasse une cellule. Réduisez le texte ou le nombre de lignes et colonnes.",
-        );
-      return lines;
-    }),
-  );
+  let layout: ReturnType<typeof fitTableToPage>;
   const source = mupdf.Document.openDocument(
     original,
     "application/pdf",
   ).asPDF()!;
   let cleaned: Uint8Array;
+  let tail: ReturnType<typeof inspectTableTail> | undefined;
   try {
     const page = source.loadPage(index) as mupdf.PDFPage;
     try {
@@ -265,6 +243,10 @@ export async function replaceTable(
         area.y + area.height > bottom - oy + 0.1
       )
         throw new Error("Zone hors de la page / Area outside page");
+      layout = fitTableToPage(page, table, font);
+      widths = layout.widths;
+      if (layout.rowHeights.reduce((a, b) => a + b, 0) > area.height + 0.01)
+        tail = inspectTableTail(page, area.y + area.height + 1);
       const annotation = page.createAnnotation("Redact");
       try {
         annotation.setRect([
@@ -282,6 +264,20 @@ export async function replaceTable(
       } finally {
         annotation.destroy();
       }
+      if (tail && tail.end > tail.cut) {
+        const removal = page.createAnnotation("Redact");
+        try {
+          removal.setRect([ox, oy + tail.cut, right, bottom]);
+          removal.applyRedaction(
+            0,
+            mupdf.PDFPage.REDACT_IMAGE_PIXELS,
+            mupdf.PDFPage.REDACT_LINE_ART_REMOVE_IF_COVERED,
+            mupdf.PDFPage.REDACT_TEXT_REMOVE,
+          );
+        } finally {
+          removal.destroy();
+        }
+      }
       const buffer = source.saveToBuffer("garbage=4,compress");
       try {
         cleaned = buffer.asUint8Array().slice();
@@ -294,30 +290,22 @@ export async function replaceTable(
   } finally {
     source.destroy();
   }
-  const pdf = await PDFDocument.load(cleaned),
-    page = pdf.getPage(index),
-    face = await pdf.embedFont(StandardFonts.Helvetica);
+  const pdf = await PDFDocument.load(cleaned);
+  let page = pdf.getPage(index),
+    pageIndex = index;
   const box = page.getCropBox(),
     rotation = page.getRotation().angle;
-  const convert = (x: number, y: number) => {
-    const [px, py] =
-      rotation === 90
-        ? [y, x]
-        : rotation === 180
-          ? [box.width - x, y]
-          : rotation === 270
-            ? [box.width - y, box.height - x]
-            : [x, box.height - y];
-    return { x: px + box.x, y: py + box.y, rotate: degrees(rotation) };
-  };
-  let left = area.x;
-  for (let c = 0; c < widths.length; c++) {
-    for (let r = 0; r < cells.length; r++) {
-      const top = area.y + r * rowHeight;
+  const visualHeight = rotation % 180 ? box.width : box.height;
+  const face = await pdf.embedFont(StandardFonts.Helvetica);
+  const { wrapped, rowHeights, fontSize } = layout!;
+  let top = area.y;
+  function drawRow(r: number) {
+    let left = area.x;
+    for (let c = 0; c < widths.length; c++) {
       page.drawRectangle({
-        ...convert(left, top + rowHeight),
+        ...tablePoint(page, left, top + rowHeights[r]),
         width: widths[c],
-        height: rowHeight,
+        height: rowHeights[r],
         color:
           r === 0
             ? rgb(0.1, 0.3, 0.42)
@@ -329,14 +317,58 @@ export async function replaceTable(
       });
       wrapped[r][c].forEach((line, n) =>
         page.drawText(line, {
-          ...convert(left + 4, top + 3 + fontSize + n * fontSize * 1.2),
+          ...tablePoint(
+            page,
+            left + 4,
+            top + 3 + fontSize + n * fontSize * 1.2,
+          ),
           font: face,
           size: fontSize,
           color: r === 0 ? rgb(1, 1, 1) : rgb(0.1, 0.12, 0.15),
         }),
       );
+      left += widths[c];
     }
-    left += widths[c];
+    top += rowHeights[r];
+  }
+  function nextPage() {
+    page = pdf.insertPage(++pageIndex, [box.width, box.height]);
+    page.setRotation(degrees(rotation));
+    top = 24;
+  }
+  for (let r = 0; r < cells.length; r++) {
+    if (top + rowHeights[r] > visualHeight - 24 && tail) {
+      nextPage();
+      if (r > 0 && rowHeights[0] + rowHeights[r] <= visualHeight - 48)
+        drawRow(0);
+    }
+    drawRow(r);
+  }
+  if (tail && tail.end > tail.cut) {
+    const originalPage = await tableTailSource(original, index);
+    let start = tail.cut;
+    top += 1;
+    while (start < tail.end - 0.01) {
+      const end = tail.split(start, visualHeight - 24 - top);
+      if (end <= start) {
+        if (top <= 24)
+          throw new Error(
+            "Un bloc du contenu suivant est trop haut pour une page. Son déplacement automatique n’est pas possible.",
+          );
+        nextPage();
+        continue;
+      }
+      const clipped = await pdf.embedPage(originalPage.page, {
+        left: 0,
+        right: originalPage.width,
+        bottom: originalPage.height - end,
+        top: originalPage.height - start,
+      });
+      page.drawPage(clipped, { ...tablePoint(page, 0, top + end - start) });
+      top += end - start;
+      start = end;
+      if (start < tail.end - 0.01) nextPage();
+    }
   }
   return readDocument(await pdf.save(), doc.name);
 }

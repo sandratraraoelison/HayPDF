@@ -49,7 +49,7 @@ module.exports = async function checkTables(window) {
     await js(`document.querySelector('.table-tool').click()`);
     await wait(`!!document.querySelector('.area-selection-layer')`);
     const r = await js(
-      `(()=>{const p=document.querySelector('.area-selection-layer'),r=p.getBoundingClientRect(),s=r.width/400;return {x:Math.round(r.left+37*s),y:Math.round(r.top+117*s),right:Math.round(r.left+343*s),bottom:Math.round(r.top+283*s)};})()`,
+      `(()=>{const p=document.querySelector('.area-selection-layer'),r=p.getBoundingClientRect(),s=r.width/400;return {x:Math.round(r.left+37*s),y:Math.round(r.top+117*s),right:Math.round(r.left+399*s),bottom:Math.round(r.top+360*s)};})()`,
     );
     window.webContents.sendInputEvent({
       type: "mouseDown",
@@ -99,6 +99,14 @@ module.exports = async function checkTables(window) {
     `(()=>{const input=document.querySelectorAll('.table-editor-dialog tbody tr')[3].querySelector('textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'NEW_ROW');input.dispatchEvent(new Event('input',{bubbles:true}));})()`,
   );
   await pause();
+  await js(
+    `[...document.querySelectorAll('.table-editor-dialog button')].find(b=>b.textContent.trim()==='Ajouter une colonne').click()`,
+  );
+  await pause();
+  await js(
+    `(()=>{const input=document.querySelectorAll('.table-editor-dialog tbody tr')[1].querySelectorAll('textarea')[1];Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Adding a column automatically adjusts the table dimensions');input.dispatchEvent(new Event('input',{bubbles:true}));})()`,
+  );
+  await pause();
   await fs.writeFile(
     path.join(__dirname, "../tmp/interface-table-editor.png"),
     (await window.webContents.capturePage()).toPNG(),
@@ -120,6 +128,17 @@ module.exports = async function checkTables(window) {
       `[...document.querySelectorAll('.table-editor-dialog textarea')].every(e=>!e.value.includes('REMOVE_ME'))`,
     ),
   );
+  assert.equal(
+    await js(
+      `document.querySelectorAll('.table-editor-dialog tbody tr')[0].querySelectorAll('textarea').length`,
+    ),
+    4,
+  );
+  assert.ok(
+    await js(
+      `[...document.querySelectorAll('.table-editor-dialog textarea')].some(e=>e.value.replace(/\\s/g,'')==='Addingacolumnautomaticallyadjuststhetabledimensions')`,
+    ),
+  );
   await js(`document.querySelector('.table-editor-dialog').close()`);
   await pause();
   await js(`document.querySelector('button[title="Annuler"]').click()`);
@@ -130,7 +149,28 @@ module.exports = async function checkTables(window) {
       `[...document.querySelectorAll('.table-editor-dialog textarea')].some(e=>e.value==='REMOVE_ME')`,
     ),
   );
-  await js(`document.querySelector('.table-editor-dialog').close()`);
+  for (let i = 0; i < 20; i++) {
+    await js(
+      `[...document.querySelectorAll('.table-editor-dialog button')].find(b=>b.textContent.trim()==='Ajouter une ligne').click()`,
+    );
+    await pause();
+  }
+  await js(
+    `[...document.querySelectorAll('.table-editor-dialog button')].find(b=>b.textContent.trim()==='Appliquer le tableau').click()`,
+  );
+  await wait(
+    `!document.querySelector('.table-editor-dialog') && document.querySelectorAll('.thumbnail').length > 1 && !document.querySelector('.table-tool').disabled`,
+  );
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  await fs.writeFile(
+    path.join(__dirname, "../tmp/interface-table-pagination.png"),
+    (await window.webContents.capturePage()).toPNG(),
+  );
+  await js(`document.querySelector('button[title="Annuler"]').click()`);
+  await wait(`document.querySelectorAll('.thumbnail').length === 1`);
+
   await pause();
-  console.log("Tables smoke OK (detect, edit rows, apply, reopen, undo)");
+  console.log(
+    "Tables smoke OK (column widths, word wrapping, row pagination, apply, reopen, undo)",
+  );
 };

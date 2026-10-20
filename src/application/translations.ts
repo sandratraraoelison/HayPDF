@@ -2,6 +2,24 @@
 import { workbenchTranslations } from "./workbenchTranslations";
 export const translations: Record<string, string> = {
   ...workbenchTranslations,
+  "Vérifiez les cellules détectées avant d’appliquer. Les colonnes utilisent la largeur disponible et les retours se font entre les mots. Le contenu sous le tableau est décalé ; des pages sont ajoutées si nécessaire, avec répétition de l’en-tête. Maximum : 1 000 lignes et 20 colonnes. Déplacement sans annotations ni formulaires ; un bloc trop haut ou traversant le bord du tableau doit être ajusté. Style uniforme, sans formules ni cellules fusionnées.":
+    "Check detected cells before applying. Columns use available width and text wraps between words. Content below the table is shifted; pages are added as needed, repeating the header. Maximum: 1,000 rows and 20 columns. Moving annotations or forms is not supported; oversized blocks or content crossing the table edge must be adjusted. Uniform style, no formulas or merged cells.",
+  "Encadrez une grille à texte sélectionnable, puis modifiez les cellules, lignes et colonnes. Largeurs adaptées au texte, retours entre les mots et coupure des mots seulement si indispensable. Le contenu situé sous le tableau sur la page est décalé, avec ajout de pages avant les pages suivantes et répétition de l’en-tête. Texte sélectionnable et annulation conservés. Maximum : 1 000 lignes et 20 colonnes, Helvetica 10 points, sans formules, cellules fusionnées ni tableaux scannés. Pas de déplacement des annotations ou formulaires ; blocs trop hauts ou traversant le bord inférieur exclus. Détection des obstacles visuels jusqu’à 2 048 pixels par côté.":
+    "Select a grid with selectable text, then edit cells, rows and columns. Content-aware widths, wrapping between words and splitting words only when necessary. Content below the table on the same page is shifted, inserting continuation pages before subsequent pages and repeating the header. Selectable text and undo are retained. Maximum: 1,000 rows and 20 columns, 10-point Helvetica, no formulas, merged cells or scanned tables. Moving annotations or forms is not supported; oversized blocks or content crossing the lower table edge are excluded. Visual obstacle detection at up to 2,048 pixels per side.",
+  "Le contenu à décaler contient des annotations ou des formulaires. Leur déplacement automatique n’est pas pris en charge.":
+    "The content to move contains annotations or forms. Moving them automatically is not supported.",
+  "Un texte ou une image traverse le bord inférieur du tableau. Ajustez la sélection avant de décaler la suite.":
+    "Text or an image crosses the lower table edge. Adjust the selection before shifting the following content.",
+  "Un bloc du contenu suivant est trop haut pour une page. Son déplacement automatique n’est pas possible.":
+    "A following content block is too tall for a page. Moving it automatically is not possible.",
+
+  "Vérifiez les cellules détectées avant d’appliquer. Les dimensions du tableau s’adaptent au texte dans l’espace libre à droite et en dessous, sans déplacer le contenu voisin. Style uniforme, sans recalcul des formules, cellules fusionnées ni tableaux scannés. Maximum : 100 lignes et 20 colonnes.":
+    "Check detected cells before applying. Table dimensions adapt to the text within free space to the right and below, without moving nearby content. Uniform style, no formula recalculation, merged cells or scanned tables. Maximum: 100 rows and 20 columns.",
+  "Encadrez une grille à texte sélectionnable, puis modifiez les cellules, lignes et colonnes. Les hauteurs et la largeur s’adaptent automatiquement dans l’espace libre à droite et en dessous, avec annulation. Aucun contenu voisin n’est déplacé ; un espace insuffisant bloque l’application. Style uniforme Helvetica 10 points, sans formules, cellules fusionnées ni tableaux scannés. Maximum : 100 lignes et 20 colonnes. Détection des obstacles visuels jusqu’à 2 048 pixels par côté.":
+    "Select a grid with selectable text, then edit cells, rows and columns. Row heights and table width automatically adapt within free space to the right and below, with undo. Nearby content is not moved; insufficient space blocks applying. Uniform 10-point Helvetica, no formulas, merged cells or scanned tables. Maximum: 100 rows and 20 columns. Visual obstacle detection at up to 2,048 pixels per side.",
+  "Le contenu dépasse l’espace libre disponible sur la page. Réduisez le texte ou le nombre de lignes et colonnes.":
+    "Content exceeds the free space available on the page. Reduce the text or the number of rows and columns.",
+
   "À propos": "About",
   "Informations sur HayPDF": "HayPDF information",
   "Le bouton À propos, à côté du logo, présente les fonctions, leurs limites, la version et le contact de l’auteur. Accessible sans document ouvert.":

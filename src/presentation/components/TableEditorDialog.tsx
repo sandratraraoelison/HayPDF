@@ -17,7 +17,7 @@ export function TableEditorDialog() {
       <h2 id="table-editor-title">{t("Modifier le tableau")}</h2>
       <p>
         {t(
-          "Vérifiez les cellules détectées avant d’appliquer. Le tableau est reconstruit dans sa zone d’origine avec un style uniforme ; les formules ne sont pas recalculées. Grilles sans cellules fusionnées, texte sélectionnable uniquement. Maximum : 100 lignes et 20 colonnes.",
+          "Vérifiez les cellules détectées avant d’appliquer. Les colonnes utilisent la largeur disponible et les retours se font entre les mots. Le contenu sous le tableau est décalé ; des pages sont ajoutées si nécessaire, avec répétition de l’en-tête. Maximum : 1 000 lignes et 20 colonnes. Déplacement sans annotations ni formulaires ; un bloc trop haut ou traversant le bord du tableau doit être ajusté. Style uniforme, sans formules ni cellules fusionnées.",
         )}
       </p>
       <fieldset disabled={busy}>
@@ -54,7 +54,7 @@ export function TableEditorDialog() {
                     {r + 1}
                     <Button
                       title={t("Insérer une ligne avant")}
-                      disabled={draft.cells.length >= 100}
+                      disabled={draft.cells.length >= 1000}
                       onClick={() => editor.row(r, true)}
                     >
                       +
@@ -85,7 +85,7 @@ export function TableEditorDialog() {
         <div className="table-editor-actions">
           <Button
             variant="secondary"
-            disabled={draft.cells.length >= 100}
+            disabled={draft.cells.length >= 1000}
             onClick={() => editor.row(draft.cells.length, true)}
           >
             {t("Ajouter une ligne")}

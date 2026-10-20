@@ -54,7 +54,7 @@ module.exports = async function checkInterface(window) {
   assert.ok(await js(`!!document.querySelector('.shortcut-help[open]')`));
   await js(`document.querySelector('.shortcut-help').close()`);
   await pause();
-  await js(`document.querySelector('.brand').click()`);
+  await js(`document.querySelector('.about-button').click()`);
   await pause();
   assert.ok(await js(`!!document.querySelector('.about-dialog[open]')`));
   assert.ok(
@@ -88,7 +88,7 @@ module.exports = async function checkInterface(window) {
     `(() => {const select=document.querySelector('.language-select');Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(select,'en');select.dispatchEvent(new Event('change',{bubbles:true}));})()`,
   );
   await pause();
-  await js(`document.querySelector('.brand').click()`);
+  await js(`document.querySelector('.about-button').click()`);
   await pause();
   assert.ok(
     await js(

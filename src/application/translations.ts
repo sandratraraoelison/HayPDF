@@ -2,6 +2,14 @@
 import { workbenchTranslations } from "./workbenchTranslations";
 export const translations: Record<string, string> = {
   ...workbenchTranslations,
+  "À propos": "About",
+  "Informations sur HayPDF": "HayPDF information",
+  "Le bouton À propos, à côté du logo, présente les fonctions, leurs limites, la version et le contact de l’auteur. Accessible sans document ouvert.":
+    "The About button next to the logo shows features, limitations, version and author contact details. Available without an open document.",
+  "Remplacez le texte natif, ajoutez du texte, des images, des formes, des signatures et des tampons. Choisir un outil efface la sélection précédente ; seuls les éléments en mode sélection peuvent être déplacés ou redimensionnés.":
+    "Replace native text and add text, images, shapes, signatures and stamps. Choosing a tool clears the previous selection; elements can only be moved or resized in selection mode.",
+  "Fusionnez, dupliquez, pivotez et divisez vos pages. Les miniatures permettent de changer de page, y compris en cliquant sur un élément ajouté. La rotation nécessite une page sans éléments ajoutés. Exportez en PDF, PNG, JPEG ou texte.":
+    "Merge, duplicate, rotate and split pages. Thumbnails navigate between pages, including when clicking an added element. Rotation requires a page without added elements. Export to PDF, PNG, JPEG or text.",
   "Illustration vectorielle": "Vector illustration",
   "Rendre la zone modifiable": "Make area editable",
   "Utilisez l’aplatissement de zone pour modifier une illustration vectorielle.":

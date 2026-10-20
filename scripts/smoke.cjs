@@ -256,6 +256,24 @@ app.whenReady().then(async () => {
     );
     if (Math.abs(moved - left - 10) > 0.1)
       throw new Error("Arrow movement failed");
+    await press("t");
+    if (
+      !(await window.webContents.executeJavaScript(
+        `!document.querySelector('.canvas-scroll .mark.selected') && getComputedStyle(document.querySelector('.canvas-scroll .mark')).pointerEvents === 'none' && getComputedStyle(document.querySelector('.thumbnail .mark')).pointerEvents === 'none'`,
+      ))
+    )
+      throw new Error("Insertion tool retained an interactive selection");
+    await press("v");
+    await window.webContents.executeJavaScript(
+      `document.querySelector('.canvas-scroll .mark').click()`,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    if (
+      !(await window.webContents.executeJavaScript(
+        `!!document.querySelector('.canvas-scroll .mark.selected')`,
+      ))
+    )
+      throw new Error("Selection tool could not reselect the element");
     await press("F1");
     if (
       !(await window.webContents.executeJavaScript(

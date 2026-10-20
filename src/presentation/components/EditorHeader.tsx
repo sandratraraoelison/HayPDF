@@ -7,6 +7,7 @@ import {
   Moon,
   Sun,
   History,
+  Info,
 } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
 import { DocumentMenu } from "./DocumentMenu";
@@ -27,15 +28,20 @@ export function EditorHeader() {
   return (
     <header>
       <DocumentMenu />
+      <div className="brand">
+        <BrandLogo />
+        hay<span>pdf</span>
+      </div>
       <Button
-        className="brand"
+        variant="secondary"
+        className="about-button button"
         onClick={() => setShowAbout(true)}
         title={t("À propos de HayPDF")}
         aria-label={t("À propos de HayPDF")}
+        aria-haspopup="dialog"
       >
-        <BrandLogo />
-        hay<span>pdf</span>
-        <small>{t("ATELIER PDF")}</small>
+        <Info size={16} aria-hidden="true" />
+        {t("À propos")}
       </Button>
       <div className="document-name">
         <FileText size={16} />

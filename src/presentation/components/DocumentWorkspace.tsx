@@ -2,7 +2,7 @@ import { useEditor } from "../EditorContext";
 import { WelcomeScreen } from "./WelcomeScreen";
 import { ViewControls } from "./ViewControls";
 import { EditorNotice } from "./EditorNotice";
-import { PdfCanvas } from "../PdfCanvas";
+import { PdfCanvas } from "./PdfCanvas";
 export function DocumentWorkspace() {
   const {
     t,
@@ -112,10 +112,10 @@ export function DocumentWorkspace() {
                   ? selectNativeBlock
                   : undefined
               }
-              onPlace={place}
-              onSelect={selectMark}
-              onMove={moveMark}
-              onResize={resizeMark}
+              onPlace={!busy ? place : undefined}
+              onSelect={tool === "select" && !busy ? selectMark : undefined}
+              onMove={tool === "select" && !busy ? moveMark : undefined}
+              onResize={tool === "select" && !busy ? resizeMark : undefined}
             />
           </div>
         </>

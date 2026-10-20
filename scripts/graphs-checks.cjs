@@ -111,6 +111,7 @@ module.exports = async function checkGraphs(window) {
     await js(
       `document.querySelector('.graph-source').textContent.includes('Completion') && !document.querySelector('.graph-source').textContent.includes('OLD_GRAPH')`,
     ),
+    await js(`document.querySelector('.graph-source').textContent`),
   );
   await js(`document.querySelector('.graph-editor-dialog').close()`);
   await pause();

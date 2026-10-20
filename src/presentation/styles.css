@@ -956,9 +956,6 @@
   .private {
     display: none;
   }
-  .brand small {
-    display: none;
-  }
 }
 * {
   box-sizing: border-box;
@@ -1069,14 +1066,9 @@ header {
 .brand > span:not(.logo) {
   color: var(--accent);
 }
-.brand small {
-  font-size: 9px;
-  letter-spacing: 1.6px;
-  font-weight: 600;
-  margin-left: 18px;
-  padding-left: 19px;
-  border-left: 1px solid var(--line);
-  color: var(--muted);
+.about-button {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .logo {
   width: 38px;
@@ -1893,8 +1885,7 @@ textarea {
   color: var(--text);
 }
 @media (max-width: 1150px) {
-  .private,
-  .brand small {
+  .private {
     display: none;
   }
   .workspace {

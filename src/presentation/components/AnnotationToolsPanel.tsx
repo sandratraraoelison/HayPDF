@@ -3,7 +3,7 @@ import { useEditor } from "../EditorContext";
 import { Button } from "../ui/Button";
 import { NumberField } from "../ui/NumberField";
 import { PdfAreaPreview } from "./PdfAreaPreview";
-import { PdfCanvas } from "../PdfCanvas";
+import { PdfCanvas } from "./PdfCanvas";
 import type { Point, MeasurementKind } from "../../domain/workbench";
 export function AnnotationToolsPanel({ mode }: { mode: "stamp" | "measure" }) {
   const tools = useAnnotationTools(),

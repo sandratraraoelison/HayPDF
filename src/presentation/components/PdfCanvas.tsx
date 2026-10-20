@@ -1,12 +1,16 @@
-import type { DocumentModel, NativeText, PageModel } from "../domain/document";
-import { usePdfPage } from "./hooks/usePdfPage";
-import { MarkOverlay } from "./components/MarkOverlay";
-import { Button } from "./ui/Button";
-import type { Rect } from "../domain/imageLayout";
-import type { NativeImage } from "../domain/nativeImage";
-import type { StrokePoint } from "../domain/shapes";
-import { FreehandLayer } from "./components/FreehandLayer";
-import { AreaSelectionLayer } from "./components/AreaSelectionLayer";
+import type {
+  DocumentModel,
+  NativeText,
+  PageModel,
+} from "../../domain/document";
+import { usePdfPage } from "../hooks/usePdfPage";
+import { MarkOverlay } from "./MarkOverlay";
+import { Button } from "../ui/Button";
+import type { Rect } from "../../domain/imageLayout";
+import type { NativeImage } from "../../domain/nativeImage";
+import type { StrokePoint } from "../../domain/shapes";
+import { FreehandLayer } from "./FreehandLayer";
+import { AreaSelectionLayer } from "./AreaSelectionLayer";
 interface PdfCanvasProps {
   doc: DocumentModel;
   page: PageModel;

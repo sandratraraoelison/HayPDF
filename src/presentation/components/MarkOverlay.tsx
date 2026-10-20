@@ -38,6 +38,7 @@ export function MarkOverlay({
     <div
       className={`mark ${mark.kind} ${selected ? "selected" : ""}`}
       style={{
+        pointerEvents: onSelect || onMove || onResize ? undefined : "none",
         left: transform.rect.x * scale,
         top: transform.rect.y * scale,
         width: transform.rect.width * scale,

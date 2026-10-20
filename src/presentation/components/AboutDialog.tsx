@@ -8,6 +8,7 @@ import {
   Mail,
   X,
   Wrench,
+  Info,
 } from "lucide-react";
 import { appFeatures } from "../../application/appFeatures";
 import { exportFormats } from "../../application/exportFormats";
@@ -25,6 +26,7 @@ const featureIcons = {
   History,
   ClipboardList,
   Wrench,
+  Info,
 };
 
 export function AboutDialog() {

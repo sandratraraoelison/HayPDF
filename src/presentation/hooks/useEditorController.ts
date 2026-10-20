@@ -391,7 +391,8 @@ export function useEditorController() {
     if (graphEditor.selecting) graphEditor.cancel();
     clearActionInfo();
     nativeImages.selectImage(undefined);
-    if (next === "rectangle") setSelected(undefined);
+    setSelected(undefined);
+    setNativeBlock(undefined);
     setTool(next);
     if (next === "image") imageInput.current?.click();
   }

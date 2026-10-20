@@ -1,6 +1,6 @@
 import type { DocumentModel, PageModel } from "../../domain/document";
 import type { Rect } from "../../domain/imageLayout";
-import { PdfCanvas } from "../PdfCanvas";
+import { PdfCanvas } from "./PdfCanvas";
 
 export function PdfAreaPreview({
   doc,

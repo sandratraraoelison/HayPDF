@@ -2,7 +2,7 @@ import { Button } from "../ui/Button";
 import { useEditor } from "../EditorContext";
 import { Check, FilePlus2, Layers } from "lucide-react";
 import { PageActions } from "./PageActions";
-import { PdfCanvas } from "../PdfCanvas";
+import { PdfCanvas } from "./PdfCanvas";
 export function PagesSidebar() {
   const { t, doc, selectPage, busy, mergeInput, page } = useEditor();
   return (

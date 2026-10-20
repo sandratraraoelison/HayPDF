@@ -1,6 +1,12 @@
 /** Keep this catalog and its translations current whenever features change. */
 export const appFeatures = [
   {
+    icon: "Info",
+    title: "Informations sur HayPDF",
+    summary:
+      "Le bouton À propos, à côté du logo, présente les fonctions, leurs limites, la version et le contact de l’auteur. Accessible sans document ouvert.",
+  },
+  {
     icon: "Files",
     title: "Détection des images et illustrations",
     summary:
@@ -46,13 +52,13 @@ export const appFeatures = [
     icon: "FilePenLine",
     title: "Modifier et annoter",
     summary:
-      "Remplacez le texte natif, ajoutez du texte, des images, des formes, des signatures et des tampons.",
+      "Remplacez le texte natif, ajoutez du texte, des images, des formes, des signatures et des tampons. Choisir un outil efface la sélection précédente ; seuls les éléments en mode sélection peuvent être déplacés ou redimensionnés.",
   },
   {
     icon: "Files",
     title: "Organiser et exporter",
     summary:
-      "Fusionnez, dupliquez, pivotez et divisez vos pages. Exportez en PDF, PNG, JPEG ou texte.",
+      "Fusionnez, dupliquez, pivotez et divisez vos pages. Les miniatures permettent de changer de page, y compris en cliquant sur un élément ajouté. La rotation nécessite une page sans éléments ajoutés. Exportez en PDF, PNG, JPEG ou texte.",
   },
   {
     icon: "ScanText",

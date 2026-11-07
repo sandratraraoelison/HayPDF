@@ -2,6 +2,10 @@ import { useState } from "react";
 import type { DocumentModel } from "../../domain/document";
 import { unlockPdf } from "../../infrastructure/pdfSecurity";
 import { mergeDocument, readDocument } from "../../infrastructure/pdfEngine";
+import {
+  imageDocumentType,
+  readImageDocument,
+} from "../../infrastructure/imageDocument";
 
 export function usePdfOpening({
   doc,
@@ -30,6 +34,11 @@ export function usePdfOpening({
       if (file.size > 100 * 1024 * 1024)
         throw new Error("La limite par fichier est de 100 Mo.");
       const bytes = new Uint8Array(await file.arrayBuffer());
+      if (!merge && imageDocumentType(bytes)) {
+        onOpened(await readImageDocument(bytes, file.name));
+        setLockedFile(undefined);
+        return;
+      }
       const decrypted = unlockPdf(bytes);
       if (!decrypted) {
         setLockedFile({ bytes, name: file.name, merge });

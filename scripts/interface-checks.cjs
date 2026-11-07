@@ -41,7 +41,7 @@ module.exports = async function checkInterface(window) {
   await js(`document.querySelector('.document-menu-trigger').click()`);
   await pause();
   await js(
-    `(() => {const input=document.querySelector('input[accept="application/pdf"]');const original=input.click;window.__menuOpenedPdf=false;input.click=()=>window.__menuOpenedPdf=true;[...document.querySelectorAll('.document-menu button')].find(b=>b.textContent.trim()==='Ouvrir un PDF').click();input.click=original;})()`,
+    `(() => {const input=document.querySelector('input[accept^="application/pdf"]');const original=input.click;window.__menuOpenedPdf=false;input.click=()=>window.__menuOpenedPdf=true;[...document.querySelectorAll('.document-menu button')].find(b=>b.textContent.trim()==='Ouvrir un PDF ou une image').click();input.click=original;})()`,
   );
   assert.equal(await js(`window.__menuOpenedPdf`), true);
   await pause();

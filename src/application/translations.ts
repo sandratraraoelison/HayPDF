@@ -2,6 +2,60 @@
 import { workbenchTranslations } from "./workbenchTranslations";
 export const translations: Record<string, string> = {
   ...workbenchTranslations,
+  "Étendre une ligne OCR": "Extend an OCR line",
+  "La correction utilise aussi l’espace uniforme libre à droite du cadre OCR, jusqu’au premier obstacle ou changement de fond. Aucun étirement des caractères. La zone s’agrandit uniquement selon le texte saisi ; les annotations ajoutées sont protégées. Relancer l’OCR après une ancienne analyse. Les fonds complexes restent exclus.":
+    "Corrections also use uniform free space to the right of the OCR box, stopping at the first obstacle or background change. Characters are not stretched. The area expands only as needed for the entered text; added annotations are protected. Rerun OCR after an older analysis. Complex backgrounds remain unsupported.",
+  "Après OCR, modifiez visuellement une ligne avec les caractères reconnus sur la page, sans rechercher de police. Validation directe ou aperçu facultatif, fond uniforme blanc, gris ou coloré ; 500 caractères maximum dans l’espace libre détecté. Caractères absents refusés ; styles et alignements à vérifier. Source intacte, annulation et export conservés.":
+    "After OCR, visually edit a line using characters recognized on the page without finding a font. Direct validation or optional preview on uniform white, gray or colored backgrounds; up to 500 characters within detected free space. Missing characters rejected; check styling and alignment. Original source, undo and export preserved.",
+  "Le texte dépasse l’espace libre à droite. Un texte, un élément graphique ou un changement de fond limite la zone disponible. Relancez l’OCR pour actualiser cette zone.":
+    "Text exceeds free space on the right. Text, graphics or a background change limits the available area. Rerun OCR to refresh this area.",
+  "Valider le texte applique la correction visible sur l’image et met à jour la couche recherchable en une étape annulable. Réutilisation des caractères reconnus, fonds uniformes blancs, gris ou colorés. Caractères absents et dépassements refusés ; relancer l’OCR pour analyser le fond. Le masquage visuel ne supprime pas les pixels d’origine de manière sécurisée.":
+    "Validate text applies the visible correction to the image and updates searchable text in one undoable step. Reuses recognized characters on uniform white, gray or colored backgrounds. Missing characters and overflow are rejected; rerun OCR to analyze the background. Visual masking does not securely remove original pixels.",
+  "Les lignes OCR sont encadrées et cliquables en mode sélection. La première ligne apparaît dans les propriétés. Validez une correction pour modifier son rendu visible ; la couche recherchable suit la modification. Les fonds complexes ne sont pas pris en charge.":
+    "OCR lines are outlined and clickable in selection mode. The first line appears in properties. Validate a correction to change its visible rendering and searchable text. Complex backgrounds are not supported.",
+  "Après OCR, modifiez visuellement une ligne avec les caractères reconnus sur la page, sans rechercher de police. Validation directe ou aperçu facultatif, fond uniforme blanc, gris ou coloré ; 500 caractères maximum dans la largeur d’origine. Caractères absents refusés ; styles et alignements à vérifier. Source intacte, annulation et export conservés.":
+    "After OCR, visually edit a line using characters recognized on the page without finding a font. Direct validation or optional preview, uniform white, gray or colored background; up to 500 characters within the original width. Missing characters rejected; check styling and alignment. Original source, undo and export preserved.",
+  "Relancez l’OCR. Si le fond reste incompatible, cette ligne ne peut pas être modifiée visuellement.":
+    "Run OCR again. If the background remains incompatible, this line cannot be edited visually.",
+  "Le texte visible dans l’image a été modifié. Vous pouvez annuler.":
+    "The visible text in the image has been changed. You can undo.",
+  "Validez pour modifier le texte visible dans l’image avec les caractères reconnus. Fond uniforme requis ; les caractères absents sont refusés.":
+    "Validate to change visible text in the image using recognized characters. A uniform background is required; missing characters are rejected.",
+  "Modifiez une ligne puis validez pour appliquer la correction sur l’image. L’annulation reste disponible.":
+    "Edit a line then validate to apply the correction to the image. Undo remains available.",
+  "Réutilise les caractères reconnus sur un fond uniforme blanc, gris ou coloré. Vérifiez le style dans l’aperçu. La zone originale est masquée, pas supprimée.":
+    "Reuse recognized characters on a uniform white, gray or colored background. Check styling in the preview. The original area is masked, not removed.",
+  "Valider le texte": "Validate text",
+  "Validez pour enregistrer la correction dans la couche recherchable. L’image reste inchangée.":
+    "Validate to save the correction in the searchable layer. The image remains unchanged.",
+  "Texte OCR validé. La couche recherchable a été mise à jour ; l’image reste inchangée.":
+    "OCR text validated. The searchable layer has been updated; the image remains unchanged.",
+  "Valider une correction OCR": "Validate an OCR correction",
+  "Modifiez une ligne reconnue puis cliquez sur Valider le texte. La correction est appliquée en une étape annulable à la couche recherchable uniquement ; l’image reste inchangée. Les saisies non validées ne sont pas exportées et sont abandonnées en quittant la ligne.":
+    "Edit a recognized line then click Validate text. The correction is applied in one undoable step to the searchable layer only; the image remains unchanged. Unvalidated edits are not exported and are discarded when leaving the line.",
+  "Afficher les résultats OCR": "Show OCR results",
+  "Après reconnaissance, les lignes sont encadrées et cliquables en mode sélection. La première ligne est affichée dans les propriétés ; le message indique le nombre de lignes. La couche OCR reste invisible à l’export. La correction du texte recherchable est distincte de la recomposition visuelle, indisponible si le fond ne permet pas un découpage sûr.":
+    "After recognition, lines are outlined and clickable in selection mode. The first line appears in properties; the notice shows the line count. The OCR layer stays invisible on export. Searchable text correction is separate from visual reconstruction, which is unavailable when the background prevents safe character extraction.",
+  "lignes reconnues. Cliquez sur un cadre pour afficher le texte dans les propriétés.":
+    "lines recognized. Click an outline to show the text in properties.",
+  "Texte reconnu, mais recomposition indisponible : le fond ou les contours de cette ligne ne permettent pas un découpage sûr des caractères. La correction ci-dessus modifie uniquement la couche recherchable.":
+    "Text recognized, but reconstruction unavailable: the background or outline of this line prevents safe character extraction. Editing above changes only the searchable layer.",
+  "Ouvrir un PDF ou une image": "Open a PDF or image",
+  "Ouvrez un PDF, une image PNG ou JPEG de 100 Mo maximum. Les images sont converties localement en une page PDF A4 avec marges, en conservant leurs proportions. Le fichier original reste intact ; les outils PDF et OCR sont disponibles après ouverture. Les autres formats d’image ne sont pas pris en charge.":
+    "Open a PDF, PNG or JPEG image up to 100 MB. Images are converted locally into one A4 PDF page with margins, preserving their proportions. The original file remains intact; PDF and OCR tools are available after opening. Other image formats are not supported.",
+  "Texte dans les images": "Text in images",
+  "Après OCR, recomposez une ligne avec les caractères reconnus sur la page, sans rechercher de police. Aperçu obligatoire, fond blanc uniquement, 500 caractères maximum et largeur de ligne fixe. Caractères absents refusés ; styles et alignements à vérifier. Masquage visuel réversible, sans suppression sécurisée du texte original. Images PNG/JPEG à convertir en PDF avant modification.":
+    "After OCR, rebuild a line using characters recognized on the page without finding a font. Preview required; white backgrounds only, up to 500 characters within the original line width. Missing characters rejected; check style and alignment. Reversible visual masking without secure removal of original text. Convert PNG/JPEG images to PDF before editing.",
+  "Modifier le texte dans l’image": "Edit text in the image",
+  "Réutilise les caractères reconnus de la page, sans police. Fond blanc uniquement ; taille et style à vérifier dans l’aperçu. La zone originale est masquée, pas supprimée.":
+    "Reuse recognized characters from the page without a font. White backgrounds only; check size and style in the preview. The original area is masked, not removed.",
+  "Nouveau texte": "New text",
+  "Caractère indisponible dans l’image :":
+    "Character unavailable in the image:",
+  "Le texte dépasse la largeur de la ligne.": "Text exceeds the line width.",
+  "Une seule ligne de 500 caractères maximum.":
+    "One line of up to 500 characters.",
+  "Aperçu du texte recomposé": "Rebuilt text preview",
   "Vérifiez les cellules détectées avant d’appliquer. Les colonnes utilisent la largeur disponible et les retours se font entre les mots. Le contenu sous le tableau est décalé ; des pages sont ajoutées si nécessaire, avec répétition de l’en-tête. Maximum : 1 000 lignes et 20 colonnes. Déplacement sans annotations ni formulaires ; un bloc trop haut ou traversant le bord du tableau doit être ajusté. Style uniforme, sans formules ni cellules fusionnées.":
     "Check detected cells before applying. Columns use available width and text wraps between words. Content below the table is shifted; pages are added as needed, repeating the header. Maximum: 1,000 rows and 20 columns. Moving annotations or forms is not supported; oversized blocks or content crossing the table edge must be adjusted. Uniform style, no formulas or merged cells.",
   "Encadrez une grille à texte sélectionnable, puis modifiez les cellules, lignes et colonnes. Largeurs adaptées au texte, retours entre les mots et coupure des mots seulement si indispensable. Le contenu situé sous le tableau sur la page est décalé, avec ajout de pages avant les pages suivantes et répétition de l’en-tête. Texte sélectionnable et annulation conservés. Maximum : 1 000 lignes et 20 colonnes, Helvetica 10 points, sans formules, cellules fusionnées ni tableaux scannés. Pas de déplacement des annotations ou formulaires ; blocs trop hauts ou traversant le bord inférieur exclus. Détection des obstacles visuels jusqu’à 2 048 pixels par côté.":

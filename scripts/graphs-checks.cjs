@@ -32,7 +32,7 @@ module.exports = async function checkGraphs(window) {
   page.drawText("Outside unchanged", { x: 20, y: 470, size: 12 });
   const bytes = Array.from(await pdf.save());
   await js(
-    `(()=>{const input=document.querySelector('input[accept="application/pdf"]');const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})],'charts.pdf',{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
+    `(()=>{const input=document.querySelector('input[accept^="application/pdf"]');const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})],'charts.pdf',{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
   );
   await wait(
     `document.querySelector('.document-name').textContent.includes('charts.pdf') && !document.querySelector('.graph-tool').disabled`,

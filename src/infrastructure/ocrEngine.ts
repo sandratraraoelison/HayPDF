@@ -1,3 +1,4 @@
+import { captureRasterLine } from "./rasterText";
 import { createWorker } from "tesseract.js";
 import { loadPreview } from "./pdfPreview";
 import type { DocumentModel, Mark, PageModel } from "../domain/document";
@@ -9,6 +10,7 @@ export async function recognizePage(
   page: PageModel,
   onProgress: (progress: number) => void,
   language: Exclude<RecognitionLanguage, "none"> = "fra+eng",
+  captureGlyphs = false,
 ): Promise<Mark[]> {
   const visiblePage = {
     ...page,
@@ -51,12 +53,15 @@ export async function recognizePage(
             text: line.text.trim(),
             x: line.bbox.x0 / scale,
             y: line.bbox.y0 / scale,
-            width: (line.bbox.x1 - line.bbox.x0) / scale + 5,
+            width: (line.bbox.x1 - line.bbox.x0) / scale,
             height: (line.bbox.y1 - line.bbox.y0) / scale,
             size: Math.max(6, ((line.bbox.y1 - line.bbox.y0) / scale) * 0.9),
             color: "#000000",
             font: "Helvetica" as const,
             invisible: true,
+            rasterLine: captureGlyphs
+              ? captureRasterLine(canvas, line)
+              : undefined,
           })),
         ),
       )

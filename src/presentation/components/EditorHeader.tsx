@@ -75,7 +75,7 @@ export function EditorHeader() {
         onClick={() => input.current?.click()}
       >
         <FolderOpen size={16} />
-        {t("Ouvrir un PDF")}
+        {t("Ouvrir un PDF ou une image")}
       </Button>
       <Button
         variant="primary"

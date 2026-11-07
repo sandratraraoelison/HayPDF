@@ -23,7 +23,7 @@ module.exports = async function checkNativeImages(window, pngBytes) {
   pdf.getPage(0).drawText("Editable native text", { x: 55, y: 130, size: 10 });
   const bytes = Array.from(await pdf.save());
   await js(
-    `(() => { const input = document.querySelector('input[accept="application/pdf"]'); const transfer = new DataTransfer(); transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})], 'native-images.pdf', {type:'application/pdf'})); input.files = transfer.files; input.dispatchEvent(new Event('change', {bubbles:true})); })()`,
+    `(() => { const input = document.querySelector('input[accept^="application/pdf"]'); const transfer = new DataTransfer(); transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})], 'native-images.pdf', {type:'application/pdf'})); input.files = transfer.files; input.dispatchEvent(new Event('change', {bubbles:true})); })()`,
   );
   await wait(
     `document.body.textContent.includes('native-images.pdf') && !document.querySelector('header button[disabled]')`,

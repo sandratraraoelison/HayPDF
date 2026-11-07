@@ -149,7 +149,7 @@ module.exports = async function checkDocumentTools(window, pngBytes) {
   } finally {
     encrypted.destroy();
   }
-  await inject('input[accept="application/pdf"]', [
+  await inject('input[accept^="application/pdf"]', [
     {
       name: "protected.pdf",
       type: "application/pdf",
@@ -180,7 +180,7 @@ module.exports = async function checkDocumentTools(window, pngBytes) {
   dropdown.addOptions(["Alpha", "Beta"]);
   dropdown.select("Alpha");
   dropdown.addToPage(page, { x: 40, y: 600, width: 220, height: 30 });
-  await inject('input[accept="application/pdf"]', [
+  await inject('input[accept^="application/pdf"]', [
     {
       name: "form.pdf",
       type: "application/pdf",

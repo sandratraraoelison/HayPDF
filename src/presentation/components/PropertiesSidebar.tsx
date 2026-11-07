@@ -30,8 +30,10 @@ export function PropertiesSidebar() {
       </div>
       {doc && nativeImages.selectedImage && <NativeImagesPanel />}
       {nativeBlock && <NativeTextPanel />}
+      {mark?.invisible && <OcrResultsPanel />}
       {hasProperties ? (
-        nativeImages.selectedImage ? null : mark?.kind === "image" ? (
+        nativeImages.selectedImage || mark?.invisible ? null : mark?.kind ===
+          "image" ? (
           <ImageProperties />
         ) : (
           <TextProperties showContent={!nativeBlock} />
@@ -56,7 +58,9 @@ export function PropertiesSidebar() {
         </div>
       )}
       {doc && !nativeImages.selectedImage && <NativeImagesPanel />}
-      {page?.marks.some((m) => m.invisible) && <OcrResultsPanel />}
+      {!mark?.invisible && page?.marks.some((m) => m.invisible) && (
+        <OcrResultsPanel />
+      )}
     </aside>
   );
 }

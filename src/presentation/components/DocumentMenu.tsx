@@ -18,7 +18,7 @@ export function DocumentMenu() {
       disabled: false,
     },
     {
-      label: "Ouvrir un PDF",
+      label: "Ouvrir un PDF ou une image",
       icon: FolderOpen,
       action: () => input.current?.click(),
       disabled: false,

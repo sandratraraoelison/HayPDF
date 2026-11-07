@@ -40,7 +40,7 @@ module.exports = async function checkTables(window) {
       });
   const bytes = Array.from(await pdf.save());
   await js(
-    `(()=>{const input=document.querySelector('input[accept="application/pdf"]');const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})],'table.pdf',{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
+    `(()=>{const input=document.querySelector('input[accept^="application/pdf"]');const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})],'table.pdf',{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
   );
   await wait(
     `document.querySelector('.document-name').textContent.includes('table.pdf') && !document.querySelector('.table-tool').disabled`,

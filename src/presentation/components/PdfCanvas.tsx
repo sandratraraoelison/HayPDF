@@ -151,6 +151,28 @@ export function PdfCanvas({
             bounds={{ width: size.width / scale, height: size.height / scale }}
           />
         ))}
+      {onSelect &&
+        page.marks
+          .filter((mark) => mark.invisible)
+          .map((mark) => (
+            <Button
+              key={`ocr-${mark.id}`}
+              className={`native-block ocr-block${selected === mark.id ? " selected" : ""}`}
+              title={mark.text}
+              aria-label={`${t("Texte reconnu")} : ${mark.text}`}
+              aria-pressed={selected === mark.id}
+              style={{
+                left: mark.x * scale,
+                top: mark.y * scale,
+                width: mark.width * scale,
+                height: mark.height * scale,
+              }}
+              onClick={(event) => {
+                event.stopPropagation();
+                onSelect(mark.id);
+              }}
+            />
+          ))}
     </div>
   );
 }

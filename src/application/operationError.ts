@@ -16,6 +16,9 @@ export function describeOperationError(
     code === "NATIVE_FONT_UNAVAILABLE" || code === "NATIVE_FONT_MISSING_GLYPH";
   let summary: string;
   const toolErrors: Record<string, string> = {
+    RASTER_OVERFLOW:
+      "Le texte dépasse l’espace libre à droite. Un texte, un élément graphique ou un changement de fond limite la zone disponible. Relancez l’OCR pour actualiser cette zone.",
+    RASTER_LENGTH: "Une seule ligne de 500 caractères maximum.",
     NO_EXTRACTABLE_TEXT:
       "Aucun texte extrait. Activez l’OCR pour les pages scannées ou choisissez un export en images.",
     CONVERSION_LIMIT:

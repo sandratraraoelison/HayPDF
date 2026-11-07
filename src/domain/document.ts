@@ -1,3 +1,4 @@
+import type { RasterLine } from "./rasterText";
 import type { ShapeKind, StrokePoint } from "./shapes";
 export type Tool =
   | "select"
@@ -30,6 +31,7 @@ export interface Mark {
   naturalWidth?: number;
   naturalHeight?: number;
   invisible?: boolean;
+  rasterLine?: RasterLine;
   bold?: boolean;
   italic?: boolean;
   baselineOffset?: number;

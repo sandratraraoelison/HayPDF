@@ -3,6 +3,8 @@ import { usePreferences } from "../../application/usePreferences";
 import { useDocument } from "../../application/useDocument";
 import { replaceNativeText } from "../../application/replaceNativeText";
 import { recognizePage } from "../../infrastructure/ocrEngine";
+import { renderRasterText } from "../../infrastructure/rasterText";
+import { applyRasterText } from "../../application/applyRasterText";
 import { exportDocument } from "../../infrastructure/pdfEngine";
 import { savePdf } from "../../infrastructure/fileGateway";
 
@@ -317,7 +319,13 @@ export function useEditorController() {
     if (!doc || !page) return;
     setOcrProgress(0);
     await run(async () => {
-      const marks = await recognizePage(doc, page, setOcrProgress);
+      const marks = await recognizePage(
+        doc,
+        page,
+        setOcrProgress,
+        "fra+eng",
+        true,
+      );
       if (!marks.length) {
         setNotice(t("Aucun texte reconnu sur cette page."));
         return;
@@ -333,8 +341,12 @@ export function useEditorController() {
             : p,
         ),
       });
+      setTool("select");
+      setSelected(marks[0].id);
+      setNativeBlock(undefined);
+      nativeImages.selectImage(undefined);
       setNotice(
-        t("OCR terminé. Vous pouvez corriger les lignes reconnues."),
+        `${t("OCR terminé. Vous pouvez corriger les lignes reconnues.")} ${marks.length} ${t("lignes reconnues. Cliquez sur un cadre pour afficher le texte dans les propriétés.")}`,
         "success",
       );
     });
@@ -492,21 +504,38 @@ export function useEditorController() {
     });
     clearActionInfo();
   }
-  function updateOcrText(id: string, value: string) {
-    if (doc && page)
-      commit({
-        ...doc,
-        pages: doc.pages.map((p) =>
-          p.id === page.id
-            ? {
-                ...p,
-                marks: p.marks.map((m) =>
-                  m.id === id ? { ...m, text: value } : m,
-                ),
-              }
-            : p,
-        ),
-      });
+  async function updateOcrText(id: string, value: string) {
+    if (!doc || !page) return;
+    const target = page.marks.find((m) => m.id === id && m.invisible);
+    if (!target || target.text === value) return;
+    await run(async () => {
+      if (!target.rasterLine)
+        throw new Error(
+          t(
+            "Relancez l’OCR. Si le fond reste incompatible, cette ligne ne peut pas être modifiée visuellement.",
+          ),
+        );
+      let data: string;
+      try {
+        data = await renderRasterText(
+          value,
+          target.rasterLine,
+          page.marks.flatMap((m) => (m.rasterLine ? [m.rasterLine] : [])),
+        );
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        if (message.startsWith("RASTER_MISSING:"))
+          throw new Error(
+            `${t("Caractère indisponible dans l’image :")} ${message.slice(16)}`,
+          );
+        throw error;
+      }
+      commit(applyRasterText(doc, page.id, id, value, data));
+      setNotice(
+        t("Le texte visible dans l’image a été modifié. Vous pouvez annuler."),
+        "success",
+      );
+    });
   }
   async function loadImage(file?: File) {
     if (!file) return;

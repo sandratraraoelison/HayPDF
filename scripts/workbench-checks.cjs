@@ -60,7 +60,7 @@ module.exports = async function workbenchChecks(window, pngBytes) {
     .addPage([400, 500])
     .drawText("Review document", { x: 30, y: 400, size: 20 });
   const fixtureBytes = Array.from(await fixture.save());
-  await inject('input[accept="application/pdf"]', [
+  await inject('input[accept^="application/pdf"]', [
     { name: "workbench.pdf", type: "application/pdf", bytes: fixtureBytes },
   ]);
   await wait(

@@ -40,7 +40,7 @@ module.exports = async function checkImageDetection(window, pngBytes) {
   page.drawText("Vector illustration", { x: 250, y: 200, size: 10 });
   const bytes = Array.from(await pdf.save());
   await js(
-    `(()=>{const input=document.querySelector('input[accept="application/pdf"]'),transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})],'detection.pdf',{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
+    `(()=>{const input=document.querySelector('input[accept^="application/pdf"]'),transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})],'detection.pdf',{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
   );
   await wait(
     `document.querySelector('.document-name').textContent.includes('detection.pdf') && document.querySelectorAll('.canvas-scroll .native-image-block').length===2`,

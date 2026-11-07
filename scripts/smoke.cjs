@@ -77,6 +77,58 @@ app.whenReady().then(async () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
     await fs.mkdir(path.join(__dirname, "../tmp"), { recursive: true });
     await require("./interface-checks.cjs")(window);
+    for (const format of ['png', 'jpeg']) {
+      await window.webContents.executeJavaScript(`(() => {
+        const canvas = document.createElement('canvas'); canvas.width = 200; canvas.height = 100;
+        const ctx = canvas.getContext('2d'); ctx.fillStyle = 'white'; ctx.fillRect(0,0,200,100);
+        ctx.fillStyle = 'black'; ctx.fillText('Image opening',20,40);
+        const data = atob(canvas.toDataURL('image/${format}').split(',')[1]);
+        const input = document.querySelector('input[accept^="application/pdf"]');
+        const transfer = new DataTransfer();
+        transfer.items.add(new File([Uint8Array.from(data,c=>c.charCodeAt(0))], 'opening-${format}.${format}'));
+        input.files = transfer.files; input.dispatchEvent(new Event('change',{bubbles:true}));
+      })()`);
+      for (let i = 0; i < 100; i++) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        if (await window.webContents.executeJavaScript(`document.body.textContent.includes('opening-${format}.pdf') && !!document.querySelector('.canvas-scroll canvas')`)) break;
+      }
+      if (!(await window.webContents.executeJavaScript(`document.body.textContent.includes('opening-${format}.pdf') && !!document.querySelector('.canvas-scroll canvas')`)))
+        throw new Error('Image opening failed: ' + format);
+    }
+    console.log('PNG/JPEG opening smoke OK');
+    await window.webContents.executeJavaScript(`(() => {
+      const canvas=document.createElement('canvas'); canvas.width=700; canvas.height=180;
+      const ctx=canvas.getContext('2d'); ctx.fillStyle='#eeeeee'; ctx.fillRect(0,0,700,180);
+      ctx.fillStyle='#111111'; ctx.font='24px Arial'; ctx.fillText('Lenovo controller Lenovo',30,90);
+      const bytes=Uint8Array.from(atob(canvas.toDataURL().split(',')[1]),c=>c.charCodeAt(0));
+      const transfer=new DataTransfer(); transfer.items.add(new File([bytes],'gray-scan.png',{type:'image/png'}));
+      const input=document.querySelector('input[accept^="application/pdf"]'); input.files=transfer.files; input.dispatchEvent(new Event('change',{bubbles:true}));
+    })()`);
+    await new Promise(resolve=>setTimeout(resolve,1000));
+    await window.webContents.executeJavaScript(`document.querySelector('.ocr-button').click()`);
+    for(let i=0;i<300;i++) {
+      await new Promise(resolve=>setTimeout(resolve,100));
+      if(await window.webContents.executeJavaScript(`!!document.querySelector('.ocr-line-editor textarea') && !document.querySelector('.ocr-button').disabled`)) break;
+    }
+    await window.webContents.executeJavaScript(`(() => {
+      const input=document.querySelector('.ocr-line-editor textarea'); if(!input) throw new Error('Gray OCR missing');
+      Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input,'Lenovo controller Lenovo Lenovo'); input.dispatchEvent(new Event('input',{bubbles:true}));
+    })()`);
+    await new Promise(resolve=>setTimeout(resolve,100));
+    await window.webContents.executeJavaScript(`document.querySelector('.ocr-line-editor button').click()`);
+    for(let i=0;i<50;i++) {
+      await new Promise(resolve=>setTimeout(resolve,100));
+      if(await window.webContents.executeJavaScript(`!!document.querySelector('.mark.image image')`)) break;
+    }
+    const grayPixel=await window.webContents.executeJavaScript(`(async()=>{
+      const node=document.querySelector('.mark.image image'); if(!node) throw new Error('Gray visual validation failed');
+      const image=new Image(); image.src=node.getAttribute('href'); await image.decode();
+      const canvas=document.createElement('canvas'); canvas.width=image.width; canvas.height=image.height;
+      const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);return [...ctx.getImageData(canvas.width-1,canvas.height-1,1,1).data];
+    })()`);
+    if(grayPixel.slice(0,3).some(value=>Math.abs(value-238)>4)) throw new Error('Gray background was not preserved: '+grayPixel);
+    if (!(await window.webContents.executeJavaScript(`document.querySelector('.canvas-scroll .mark.image').getBoundingClientRect().width > document.querySelector('.ocr-block').getBoundingClientRect().width`))) throw new Error('OCR text did not expand into free space: '+await window.webContents.executeJavaScript(`JSON.stringify({image:document.querySelector('.canvas-scroll .mark.image').getBoundingClientRect().width,ocr:document.querySelector('.ocr-block').getBoundingClientRect().width,text:document.querySelector('.ocr-block').title,notice:document.querySelector('.notice')?.textContent})`));
+    console.log('Gray image text validation smoke OK');
     await fs.writeFile(
       path.join(__dirname, "../tmp/smoke.png"),
       (await window.webContents.capturePage()).toPNG(),
@@ -94,7 +146,7 @@ app.whenReady().then(async () => {
     });
     const bytes = Array.from(await fixture.save());
     await window.webContents.executeJavaScript(
-      `(() => { const input = document.querySelector('input[accept="application/pdf"]'); const transfer = new DataTransfer(); transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})], 'verification.pdf', {type:'application/pdf'})); input.files = transfer.files; input.dispatchEvent(new Event('change', {bubbles:true})); })()`,
+      `(() => { const input = document.querySelector('input[accept^="application/pdf"]'); const transfer = new DataTransfer(); transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})], 'verification.pdf', {type:'application/pdf'})); input.files = transfer.files; input.dispatchEvent(new Event('change', {bubbles:true})); })()`,
     );
     await new Promise((resolve) => setTimeout(resolve, 2500));
     const loaded = await window.webContents.executeJavaScript(
@@ -167,6 +219,49 @@ app.whenReady().then(async () => {
     );
     if (!recognized.text?.includes("HayPDF"))
       throw new Error("OCR failed: " + JSON.stringify({ recognized, errors }));
+    if (!(await window.webContents.executeJavaScript(`!!document.querySelector('.ocr-block[aria-pressed="true"]') && !!document.querySelector('.properties .ocr-results')`)))
+      throw new Error('OCR selection and properties must be visible after recognition');
+    await window.webContents.executeJavaScript(`document.querySelector('.ocr-block').click()`);
+    await window.webContents.executeJavaScript(`(() => {
+      const input = document.querySelector('.ocr-line-editor textarea');
+      window.__ocrOriginal = input.value;
+      Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(input, 'HayPDF');
+      input.dispatchEvent(new Event('input',{bubbles:true}));
+    })()`);
+    await new Promise(resolve => setTimeout(resolve, 100));
+    if (!(await window.webContents.executeJavaScript(`!document.querySelector('.ocr-line-editor button').disabled && document.querySelector('.ocr-block').title === window.__ocrOriginal`)))
+      throw new Error('OCR draft applied before validation');
+    await window.webContents.executeJavaScript(`document.querySelector('.ocr-line-editor button').click()`);
+    for (let i = 0; i < 50; i++) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      if (await window.webContents.executeJavaScript(`document.querySelector('.ocr-block').title === 'HayPDF' && !!document.querySelector('.mark.image')`)) break;
+    }
+    if (!(await window.webContents.executeJavaScript(`document.querySelector('.ocr-block').title === 'HayPDF' && !!document.querySelector('.mark.image') && document.querySelector('.ocr-line-editor button').disabled`)))
+      throw new Error('OCR validation failed');
+    await window.webContents.executeJavaScript(`document.querySelector('button[title="Annuler"]').click()`);
+    await new Promise(resolve => setTimeout(resolve, 100));
+    if (!(await window.webContents.executeJavaScript(`document.querySelector('.ocr-block').title === window.__ocrOriginal && document.querySelector('.ocr-line-editor textarea').value === window.__ocrOriginal`)))
+      throw new Error('OCR validation undo failed');
+    await window.webContents.executeJavaScript(`(() => {
+      const details = document.querySelector('.ocr-results details');
+      if (!details) throw new Error('Raster text editor unavailable');
+      details.open = true;
+      const input = details.querySelector('textarea');
+      Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(input, 'HayPDF');
+      input.dispatchEvent(new Event('input', {bubbles:true}));
+    })()`);
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await window.webContents.executeJavaScript(`document.querySelector('.ocr-results details button').click()`);
+    for (let i = 0; i < 50; i++) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      if (await window.webContents.executeJavaScript(`!!document.querySelector('.ocr-results details img')`)) break;
+    }
+    if (!(await window.webContents.executeJavaScript(`!!document.querySelector('.ocr-results details img')`)))
+      throw new Error('Raster preview failed: ' + await window.webContents.executeJavaScript(`document.querySelector('.ocr-results details').textContent`));
+    await window.webContents.executeJavaScript(`document.querySelector('.ocr-results details .primary').click()`);
+    await new Promise(resolve => setTimeout(resolve, 200));
+    if (!(await window.webContents.executeJavaScript(`document.querySelector('.ocr-results textarea').value === 'HayPDF' && !!document.querySelector('.mark.image')`)))
+      throw new Error('Raster text apply failed');
     await window.webContents.executeJavaScript(
       `(() => { [...document.querySelectorAll('.tools button')].find(b => b.textContent === 'Texte').click(); })()`,
     );
@@ -324,7 +419,7 @@ app.whenReady().then(async () => {
     }
     async function openSubset() {
       await window.webContents.executeJavaScript(
-        `(()=>{const input=document.querySelector('input[accept="application/pdf"]');const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(subsetBytes)})],'subset.pdf',{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
+        `(()=>{const input=document.querySelector('input[accept^="application/pdf"]');const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(subsetBytes)})],'subset.pdf',{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
       );
       await waitFor(
         `!document.querySelector('.workspace').inert && document.querySelector('.document-name').textContent.includes('subset.pdf')`,

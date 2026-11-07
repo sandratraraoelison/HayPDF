@@ -26,7 +26,7 @@ module.exports = async function checkConversions(window, originalBytes) {
   }
   async function load(bytes, name) {
     await js(
-      `(() => {const input=document.querySelector('input[accept="application/pdf"]');const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})],${JSON.stringify(name)},{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
+      `(() => {const input=document.querySelector('input[accept^="application/pdf"]');const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})],${JSON.stringify(name)},{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
     );
     await wait(
       `!document.querySelector('.workspace').inert && document.querySelector('.document-name').textContent.includes(${JSON.stringify(name)})`,

@@ -1,6 +1,36 @@
 /** Keep this catalog and its translations current whenever features change. */
 export const appFeatures = [
   {
+    icon: "ScanText",
+    title: "Étendre une ligne OCR",
+    summary:
+      "La correction utilise aussi l’espace uniforme libre à droite du cadre OCR, jusqu’au premier obstacle ou changement de fond. Aucun étirement des caractères. La zone s’agrandit uniquement selon le texte saisi ; les annotations ajoutées sont protégées. Relancer l’OCR après une ancienne analyse. Les fonds complexes restent exclus.",
+  },
+  {
+    icon: "ScanText",
+    title: "Valider une correction OCR",
+    summary:
+      "Valider le texte applique la correction visible sur l’image et met à jour la couche recherchable en une étape annulable. Réutilisation des caractères reconnus, fonds uniformes blancs, gris ou colorés. Caractères absents et dépassements refusés ; relancer l’OCR pour analyser le fond. Le masquage visuel ne supprime pas les pixels d’origine de manière sécurisée.",
+  },
+  {
+    icon: "ScanText",
+    title: "Afficher les résultats OCR",
+    summary:
+      "Les lignes OCR sont encadrées et cliquables en mode sélection. La première ligne apparaît dans les propriétés. Validez une correction pour modifier son rendu visible ; la couche recherchable suit la modification. Les fonds complexes ne sont pas pris en charge.",
+  },
+  {
+    icon: "Files",
+    title: "Ouvrir un PDF ou une image",
+    summary:
+      "Ouvrez un PDF, une image PNG ou JPEG de 100 Mo maximum. Les images sont converties localement en une page PDF A4 avec marges, en conservant leurs proportions. Le fichier original reste intact ; les outils PDF et OCR sont disponibles après ouverture. Les autres formats d’image ne sont pas pris en charge.",
+  },
+  {
+    icon: "ScanText",
+    title: "Texte dans les images",
+    summary:
+      "Après OCR, modifiez visuellement une ligne avec les caractères reconnus sur la page, sans rechercher de police. Validation directe ou aperçu facultatif, fond uniforme blanc, gris ou coloré ; 500 caractères maximum dans l’espace libre détecté. Caractères absents refusés ; styles et alignements à vérifier. Source intacte, annulation et export conservés.",
+  },
+  {
     icon: "Info",
     title: "Informations sur HayPDF",
     summary:

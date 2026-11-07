@@ -37,7 +37,7 @@ export function FileInputs() {
       <input
         ref={input}
         type="file"
-        accept="application/pdf"
+        accept="application/pdf,image/png,image/jpeg,.pdf,.png,.jpg,.jpeg"
         hidden
         onChange={(event) => {
           void load(event.target.files?.[0]);

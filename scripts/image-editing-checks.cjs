@@ -32,7 +32,7 @@ module.exports = async function checkImageEditing(window, pngBytes) {
   page.drawText("Outside", { x: 20, y: 470, size: 10 });
   const bytes = Array.from(await pdf.save());
   await js(
-    `(()=>{const input=document.querySelector('input[accept="application/pdf"]');const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})],'image-editing.pdf',{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
+    `(()=>{const input=document.querySelector('input[accept^="application/pdf"]');const transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(${JSON.stringify(bytes)})],'image-editing.pdf',{type:'application/pdf'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`,
   );
   await wait(
     `document.querySelector('.document-name').textContent.includes('image-editing.pdf') && !!document.querySelector('.canvas-scroll .native-image-block')`,
